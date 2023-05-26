@@ -7,7 +7,7 @@ protected:
 public:
     virtual void move() = 0;
 
-    void getPosition() {
+    virtual void getPosition() {
         std::cout << "Current position: (" << x << ", " << y << ")" << std::endl;
     }
 };
@@ -28,7 +28,7 @@ public:
 
 // Usage:
 int main() {
-    GameEntity* player = new Player();
+    GameEntity* player = new GameEntity();
     player->move();
     player->getPosition();
 
