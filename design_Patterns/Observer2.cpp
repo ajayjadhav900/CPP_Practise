@@ -26,12 +26,12 @@ int main()
     return 0;
 }
 
-void Stock::detach(IInvestor *valueToRemove)
+void IBM::detach(IInvestor *valueToRemove)
 {
     investors.erase(std::remove(investors.begin(), investors.end(), valueToRemove), investors.end());
 }
 
-void Stock::notifyInvestors(double price)
+void IBM::notifyInvestors(double price)
 {
     for (auto itr : investors)
     {
@@ -40,13 +40,13 @@ void Stock::notifyInvestors(double price)
     std::cout << endl;
 }
 
-void Stock::setPrice(double newPrice)
+void IBM::setPrice(double newPrice)
 {
     Price = newPrice;
     notifyInvestors(Price);
 }
 
-void Stock::attach(IInvestor *inv)
+void IBM::attach(IInvestor *inv)
 {
     investors.push_back(inv);
 }
