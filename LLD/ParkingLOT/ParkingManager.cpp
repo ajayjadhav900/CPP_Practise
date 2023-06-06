@@ -2,54 +2,8 @@
 #include <iostream>
 #include <algorithm>
 #include <ctime>
-
-EntryManager::EntryManager()
-{
-    GenerateParking();
-}
-
-ParkingSlot *EntryManager::GetFreeParkingSlot(VehicleTypes type)
-{
-    ParkingSlot *newSlot = nullptr;
-    if (type == VehicleTypes::TWO_WHEELER)
-    {
-        newSlot = &AllParkingVec[0];
-    }
-    else if (type == VehicleTypes::FOUR_WHEELER)
-    {
-        newSlot = &AllParkingVec[5];
-    }
-    else
-    {
-        std::cout << "Invalid vehicle type!!! \n";
-    }
-    return newSlot;
-}
-
-/*Vehicle* EntryManager::CreateVehicle(VehicleTypes type)
-{
-    Vehicle *newVeh = nullptr;
-    if(type == VehicleTypes::TWO_WHEELER)
-    {
-    Vehicle *newVeh = new Bike("MH14GF1759",VehicleTypes::TWO_WHEELER);
-    }
-    else if(type == VehicleTypes::FOUR_WHEELER)
-    {
-        Vehicle *newVeh = new Car("MH14GN8429",VehicleTypes::FOUR_WHEELER);
-    }
-    return newVeh;
-}
-*/
-void EntryManager::CreateTicket(ParkingSlot *parkSlot)
-{
-    auto currentTime = std::chrono::system_clock::now();
-    std::time_t currentTimeT = std::chrono::system_clock::to_time_t(currentTime);
-    Ticket *tkt = new Ticket("TKT1", currentTimeT, 10, parkSlot);
-    AllTicketsList.push_back(tkt);
-}
-
-void EntryManager::GenerateParking()
-{
+#include<chrono>
+void ParkingManager::GenerateParking() {
     AllParkingVec.push_back(BikeParkingSlot("B1A", false));
     AllParkingVec.push_back(BikeParkingSlot("B1B", false));
     AllParkingVec.push_back(BikeParkingSlot("B1C", false));
@@ -63,38 +17,72 @@ void EntryManager::GenerateParking()
     AllParkingVec.push_back(CarParkingSlot("C1E", false));
 }
 
+ParkingManager::ParkingManager() {
+    GenerateParking();
+}
+
+ParkingSlot* EntryManager::GetFreeParkingSlot(VehicleTypes type) {
+    ParkingSlot* newSlot = nullptr;
+    if (type == VehicleTypes::TWO_WHEELER) {
+        newSlot = &AllParkingVec[0];
+    }
+    else if (type == VehicleTypes::FOUR_WHEELER) {
+        newSlot = &AllParkingVec[5];
+    }
+    else {
+        std::cout << "Invalid vehicle type!!! \n";
+    }
+    return newSlot;
+}
+/*
+Vehicle* EntryManager::CreateVehicle(VehicleTypes type) {
+    Vehicle* newVeh = nullptr;
+    if (type == VehicleTypes::TWO_WHEELER) {
+        newVeh = new Bike("MH14GF1759", VehicleTypes::TWO_WHEELER);
+    }
+    else if (type == VehicleTypes::FOUR_WHEELER) {
+        newVeh = new Car("MH14GN8429", VehicleTypes::FOUR_WHEELER);
+    }
+    return newVeh;
+}
+*/
+void EntryManager::CreateTicket(ParkingSlot* parkSlot) {
+    auto currentTime = std::chrono::system_clock::now();
+    std::time_t currentTimeT = std::chrono::system_clock::to_time_t(currentTime);
+    Ticket* tkt = new Ticket("TKT1", currentTimeT, 10, parkSlot);
+    AllTicketsList.push_back(tkt);
+}
+
 void EntryManager::AllocateParking()
 {
 }
 
-Ticket *EntryManager::GetTicketDetails(std::string id)
+Ticket *EntryManager::GetTicketDetails(const std::string &id)
 {
     return nullptr;
 }
 
-Ticket *ExitManager::GetTicketDetails(std::string id)
+void EntryManager::UpdateTicketDetails(Ticket *ticket)
 {
+}
+
+Ticket* ExitManager::GetTicketDetails(const std::string& id) {
     return AllTicketsList[0];
 }
 
-void ExitManager::UpdateTicketDetails(Ticket *)
-{
-    AllTicketsList[0]->Cost = 20;
-}
-
-void ExitManager::GenerateParking()
-{
+void ExitManager::UpdateTicketDetails(Ticket* ticket) {
+    ticket->Cost = 20;
 }
 
 void ExitManager::AllocateParking()
 {
 }
 
+void ExitManager::CreateTicket(ParkingSlot *parkSlot)
+{
+}
+
 ParkingSlot *ExitManager::GetFreeParkingSlot(VehicleTypes type)
 {
     return nullptr;
-}
-
-void ExitManager::CreateTicket(ParkingSlot *parkSlot)
-{
 }
