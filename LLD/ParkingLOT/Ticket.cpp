@@ -5,7 +5,7 @@ Ticket::Ticket(const std::string& slotID)
     // Generate a unique ticket ID based on some logic
     // For simplicity, let's assume it's based on the current time
     std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(entryTime.time_since_epoch());
-    ticketID = std::to_string(ms.count());
+    ticketID = "TKT1";
 }
 
 std::string Ticket::getTicketID() const {

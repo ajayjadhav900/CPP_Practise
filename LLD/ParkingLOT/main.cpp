@@ -7,7 +7,7 @@ int main() {
 
     // Example usage of the parking management system
     entryManager.AllocateParking();
-/*
+
     // Get a free parking slot for a bike
     ParkingSlot* bikeSlot = entryManager.GetFreeParkingSlot(VehicleTypes::TWO_WHEELER);
 
@@ -15,7 +15,7 @@ int main() {
     entryManager.CreateTicket(bikeSlot);
 
     // Get the ticket details
-    std::string ticketID = "123"; // Assuming a valid ticket ID
+    std::string ticketID = "TKT1"; // Assuming a valid ticket ID
     Ticket* ticket = entryManager.GetTicketDetails(ticketID);
 
     if (ticket != nullptr) {
@@ -24,7 +24,7 @@ int main() {
         ticket->setExitTime();
         entryManager.UpdateTicketDetails(ticket);
     }
-
+    exitManager.AllTicketsList = entryManager.AllTicketsList;
     // Perform exit operations
     exitManager.AllocateParking();
 
@@ -41,6 +41,6 @@ int main() {
         std::cout << "Slot ID: " << exitTicket->getSlotID() << std::endl;
         std::cout << "Parking duration: " << parkingDuration << " minutes" << std::endl;
     }
-*/
+
     return 0;
 }
