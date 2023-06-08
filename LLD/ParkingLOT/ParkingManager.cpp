@@ -1,100 +1,94 @@
 #include "ParkingManager.hpp"
-#include <iostream>
-#include <algorithm>
-#include <ctime>
+#include<iostream>
+using namespace std;
+// ParkingManager implementation
 
-EntryManager::EntryManager()
-{
+void ParkingManager::GenerateParking() {
+    // Create and initialize the parking slots
+    AllParkingVec.push_back(new BikeParkingSlot("B1", false));
+    AllParkingVec.push_back(new BikeParkingSlot("B2", true));
+    AllParkingVec.push_back(new CarParkingSlot("C1", false));
+    AllParkingVec.push_back(new CarParkingSlot("C2", true));
+    // Add more parking slots as needed
+}
+
+ParkingManager::ParkingManager() {
     GenerateParking();
 }
 
-ParkingSlot *EntryManager::GetFreeParkingSlot(VehicleTypes type)
-{
-    ParkingSlot *newSlot = nullptr;
-    if (type == VehicleTypes::TWO_WHEELER)
-    {
-        newSlot = &AllParkingVec[0];
-    }
-    else if (type == VehicleTypes::FOUR_WHEELER)
-    {
-        newSlot = &AllParkingVec[5];
-    }
-    else
-    {
-        std::cout << "Invalid vehicle type!!! \n";
-    }
-    return newSlot;
-}
+// EntryManager implementation
 
-/*Vehicle* EntryManager::CreateVehicle(VehicleTypes type)
-{
-    Vehicle *newVeh = nullptr;
-    if(type == VehicleTypes::TWO_WHEELER)
-    {
-    Vehicle *newVeh = new Bike("MH14GF1759",VehicleTypes::TWO_WHEELER);
+ParkingSlot* EntryManager::GetFreeParkingSlot(VehicleTypes type) {
+    for (ParkingSlot* slot : AllParkingVec) {
+        if (!slot->isOccupied && slot->getVehicleType() == type) {
+            return slot;
+        }
     }
-    else if(type == VehicleTypes::FOUR_WHEELER)
-    {
-        Vehicle *newVeh = new Car("MH14GN8429",VehicleTypes::FOUR_WHEELER);
-    }
-    return newVeh;
-}
-*/
-void EntryManager::CreateTicket(ParkingSlot *parkSlot)
-{
-    auto currentTime = std::chrono::system_clock::now();
-    std::time_t currentTimeT = std::chrono::system_clock::to_time_t(currentTime);
-    Ticket *tkt = new Ticket("TKT1", currentTimeT, 10, parkSlot);
-    AllTicketsList.push_back(tkt);
-}
-
-void EntryManager::GenerateParking()
-{
-    AllParkingVec.push_back(BikeParkingSlot("B1A", false));
-    AllParkingVec.push_back(BikeParkingSlot("B1B", false));
-    AllParkingVec.push_back(BikeParkingSlot("B1C", false));
-    AllParkingVec.push_back(BikeParkingSlot("B1D", false));
-    AllParkingVec.push_back(BikeParkingSlot("B1E", false));
-
-    AllParkingVec.push_back(CarParkingSlot("C1A", false));
-    AllParkingVec.push_back(CarParkingSlot("C1B", false));
-    AllParkingVec.push_back(CarParkingSlot("C1C", false));
-    AllParkingVec.push_back(CarParkingSlot("C1D", false));
-    AllParkingVec.push_back(CarParkingSlot("C1E", false));
-}
-
-void EntryManager::AllocateParking()
-{
-}
-
-Ticket *EntryManager::GetTicketDetails(std::string id)
-{
     return nullptr;
 }
 
-Ticket *ExitManager::GetTicketDetails(std::string id)
-{
-    return AllTicketsList[0];
+void EntryManager::CreateTicket(ParkingSlot* parkSlot) {
+    if (parkSlot != nullptr) {
+        Ticket* ticket = new Ticket(parkSlot->slotID);
+        AllTicketsList.push_back(ticket);
+        parkSlot->parkVehicle();
+        std::cout << "Ticket created for slot " << parkSlot->slotID << std::endl;
+        std::cout << "Ticket ID: " << ticket->getTicketID() << std::endl;
+    } else {
+        std::cout << "No free parking slot available for the given vehicle type." << std::endl;
+    }
 }
 
-void ExitManager::UpdateTicketDetails(Ticket *)
-{
-    AllTicketsList[0]->Cost = 20;
+void EntryManager::AllocateParking() {
+    // Implement the logic for allocating parking slots for incoming vehicles
+    // You can use GetFreeParkingSlot() and CreateTicket() functions to allocate a slot and create a ticket, respectively.
 }
 
-void ExitManager::GenerateParking()
-{
-}
-
-void ExitManager::AllocateParking()
-{
-}
-
-ParkingSlot *ExitManager::GetFreeParkingSlot(VehicleTypes type)
-{
+Ticket* EntryManager::GetTicketDetails(const std::string& id) {
+    for (Ticket* ticket : AllTicketsList) {
+        if (ticket->getTicketID() == id) {
+            return ticket;
+        }
+    }
     return nullptr;
 }
 
-void ExitManager::CreateTicket(ParkingSlot *parkSlot)
-{
+void EntryManager::UpdateTicketDetails(Ticket* ticket) {
+    // Implement the logic for updating ticket details
+    // You can modify the necessary attributes of the ticket object based on specific requirements.
+}
+
+// ExitManager implementation
+
+Ticket* ExitManager::GetTicketDetails(const std::string& id) {
+    for (Ticket* ticket : AllTicketsList) {
+        if (ticket->getTicketID() == id) {
+            return ticket;
+        }
+    }
+    return nullptr;
+}
+
+void ExitManager::UpdateTicketDetails(Ticket* ticket) {
+    // Implement the logic for updating ticket details
+    // You can modify the necessary attributes of the ticket object based on specific requirements.
+}
+
+void ExitManager::AllocateParking() {
+    // Implement the logic for freeing up parking slots and updating ticket details when vehicles exit the parking
+}
+
+void ExitManager::CreateTicket(ParkingSlot* parkSlot) {
+    if (parkSlot != nullptr) {
+        parkSlot->releaseSlot();
+        std::cout << "Ticket closed for slot " << parkSlot->slotID << std::endl;
+    } else {
+        std::cout << "Invalid parking slot." << std::endl;
+    }
+}
+
+ParkingSlot* ExitManager::GetFreeParkingSlot(VehicleTypes type) {
+    // The ExitManager does not need to find free parking slots
+    // Return nullptr as there are no slots to allocate
+    return nullptr;
 }

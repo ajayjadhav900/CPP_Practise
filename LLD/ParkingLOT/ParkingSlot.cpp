@@ -1,46 +1,63 @@
-/*
 #include "ParkingSlot.hpp"
+#include <iostream>
 
-BikeParkingSlot::BikeParkingSlot(const std::string &id, bool isFree)
-{
-    ID = id;
-    IsFree = isFree;
-    //ParkedVehicle = parkedVehicle;
+// ParkingSlot implementation
+
+ParkingSlot::ParkingSlot(const std::string& id, bool occupied)
+    : slotID(id), isOccupied(occupied) {}
+
+ParkingSlot::~ParkingSlot() {}
+
+// BikeParkingSlot implementation
+
+BikeParkingSlot::BikeParkingSlot(const std::string& id, bool occupied)
+    : ParkingSlot(id, occupied) {}
+
+VehicleTypes BikeParkingSlot::getVehicleType() const {
+    return VehicleTypes::TWO_WHEELER;
 }
 
-bool BikeParkingSlot::isEmpty()
-{
-    return true;
+void BikeParkingSlot::parkVehicle() {
+    if (!isOccupied) {
+        isOccupied = true;
+        std::cout << "Bike parked in slot " << slotID << std::endl;
+    } else {
+        std::cout << "Slot " << slotID << " is already occupied" << std::endl;
+    }
 }
 
-void BikeParkingSlot::BookParkingSlot()
-{
-    IsFree = false;
+void BikeParkingSlot::releaseSlot() {
+    if (isOccupied) {
+        isOccupied = false;
+        std::cout << "Bike released from slot " << slotID << std::endl;
+    } else {
+        std::cout << "Slot " << slotID << " is already vacant" << std::endl;
+    }
 }
 
-CarParkingSlot::CarParkingSlot(const std::string &id, bool isFree)
-{
-    ID = id;
-    IsFree = isFree;
-    //ParkedVehicle = parkedVehicle;
+// CarParkingSlot implementation
+
+CarParkingSlot::CarParkingSlot(const std::string& id, bool occupied)
+    : ParkingSlot(id, occupied) {}
+
+VehicleTypes CarParkingSlot::getVehicleType() const {
+    return VehicleTypes::FOUR_WHEELER;
 }
 
-bool CarParkingSlot::isEmpty()
-{
-    return true;
+void CarParkingSlot::parkVehicle() {
+    if (!isOccupied) {
+        isOccupied = true;
+        std::cout << "Car parked in slot " << slotID << std::endl;
+    } else {
+        std::cout << "Slot " << slotID << " is already occupied" << std::endl;
+    }
 }
 
-void CarParkingSlot::BookParkingSlot()
-{
-    IsFree = false;
+void CarParkingSlot::releaseSlot() {
+    if (isOccupied) {
+        isOccupied = false;
+        std::cout << "Car released from slot " << slotID << std::endl;
+    } else {
+        std::cout << "Slot " << slotID << " is already vacant" << std::endl;
+    }
 }
-*/
-
-#include "ParkingSlot.hpp"
-
-ParkingSlot::ParkingSlot(const std::string& id, bool occupied) : slotID(id), isOccupied(occupied) {}
-
-BikeParkingSlot::BikeParkingSlot(const std::string& id, bool occupied) : ParkingSlot(id, occupied) {}
-
-CarParkingSlot::CarParkingSlot(const std::string& id, bool occupied) : ParkingSlot(id, occupied) {}
-
