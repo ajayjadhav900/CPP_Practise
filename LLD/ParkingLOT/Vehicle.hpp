@@ -1,14 +1,12 @@
 #include <string>
-enum class VehicleTypes
-{
-    TWO_WHEELER,
-    FOUR_WHEELER
-};
+#include "ParkingSlot.hpp"
+
 class Vehicle
 {
 public:
     std::string RegNo;
     VehicleTypes Type;
+    //void SetVehicle(std::string regno, VehicleTypes type);
 };
 class Bike : public Vehicle
 {
