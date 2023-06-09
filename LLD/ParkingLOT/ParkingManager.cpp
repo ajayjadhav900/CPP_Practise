@@ -27,9 +27,9 @@ ParkingSlot* EntryManager::GetFreeParkingSlot(VehicleTypes type) {
     return nullptr;
 }
 
-void EntryManager::CreateTicket(ParkingSlot* parkSlot) {
+void EntryManager::CreateTicket(ParkingSlot* parkSlot, const Vehicle& vehicle) {
     if (parkSlot != nullptr) {
-        Ticket* ticket = new Ticket(parkSlot->slotID);
+        Ticket* ticket = new Ticket(parkSlot->slotID, vehicle);
         AllTicketsList.push_back(ticket);
         parkSlot->parkVehicle();
         std::cout << "Ticket created for slot " << parkSlot->slotID << std::endl;
@@ -78,7 +78,7 @@ void ExitManager::AllocateParking() {
     // Implement the logic for freeing up parking slots and updating ticket details when vehicles exit the parking
 }
 
-void ExitManager::CreateTicket(ParkingSlot* parkSlot) {
+void ExitManager::CreateTicket(ParkingSlot* parkSlot, const Vehicle& vehicle) {
     if (parkSlot != nullptr) {
         parkSlot->releaseSlot();
         std::cout << "Ticket closed for slot " << parkSlot->slotID << std::endl;
