@@ -1,6 +1,8 @@
 #include <iostream>
 #include "ParkingManager.hpp"
-
+/*
+g++ -o parking_management ParkingSlot.cpp Ticket.cpp ParkingManager.cpp vehicle.cpp main.cpp                             
+*/
 int main()
 {
     EntryManager entryManager;
@@ -13,7 +15,7 @@ int main()
     ParkingSlot *bikeSlot = entryManager.GetFreeParkingSlot(VehicleTypes::TWO_WHEELER);
 
     // Create a ticket for the bike
-    Car bk("MH14GN8617", VehicleTypes::FOUR_WHEELER);
+    Car bk("MH14 GN8617", VehicleTypes::FOUR_WHEELER);
     Vehicle &veh = bk;
     entryManager.CreateTicket(bikeSlot, veh);
 
@@ -46,7 +48,7 @@ int main()
         std::cout << "Slot ID: " << exitTicket->getSlotID() << std::endl;
         std::cout << "Vehile Reg no: " << exitTicket->GetVehicleData().RegNo.c_str();
         VehicleTypes type = exitTicket->GetVehicleData().Type;
-        //std::cout << " Vehicle Type :"<< type << std::endl;
+        std::cout << " Vehicle Type: "<< static_cast<int>(type) << std::endl;
         std::cout << "Parking duration: " << parkingDuration << " minutes" << std::endl;
         std::cout << "Cost of ticket: " << exitTicket->EstimateCost() << " rupees" << std::endl;
 

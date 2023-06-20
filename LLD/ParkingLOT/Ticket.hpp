@@ -12,6 +12,7 @@ public:
     std::string getSlotID() const;
     std::chrono::steady_clock::time_point getEntryTime() const;
     std::chrono::steady_clock::time_point getExitTime() const;
+    double getExitTimeinSecs () const;
     Vehicle & GetVehicleData();
     void setExitTime();
     int EstimateCost();
@@ -21,6 +22,7 @@ private:
     std::string slotID;
     std::chrono::steady_clock::time_point entryTime;
     std::chrono::steady_clock::time_point exitTime;
+    double exitTimeInSeconds;
     Vehicle ParkVehicle;
     int cost;
 
