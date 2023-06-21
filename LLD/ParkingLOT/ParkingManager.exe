@@ -30744,12 +30744,33 @@ namespace std
 
 }
 # 6 "C:\\Users\\Ajay_Jadhav1\\OneDrive\\MY_C++\\Cpp_practise\\CPP_Practise\\LLD\\ParkingLOT\\Ticket.hpp" 2
+# 1 "C:\\Users\\Ajay_Jadhav1\\OneDrive\\MY_C++\\Cpp_practise\\CPP_Practise\\LLD\\ParkingLOT\\Vehicle.hpp" 1
 
 
-# 7 "C:\\Users\\Ajay_Jadhav1\\OneDrive\\MY_C++\\Cpp_practise\\CPP_Practise\\LLD\\ParkingLOT\\Ticket.hpp"
+
+
+# 4 "C:\\Users\\Ajay_Jadhav1\\OneDrive\\MY_C++\\Cpp_practise\\CPP_Practise\\LLD\\ParkingLOT\\Vehicle.hpp"
+class Vehicle
+{
+public:
+    std::string RegNo;
+    VehicleTypes Type;
+    void SetVehicle(std::string regno, VehicleTypes type);
+};
+class Bike : public Vehicle
+{
+public:
+    Bike(std::string regNO, VehicleTypes type);
+};
+class Car : public Vehicle
+{
+public:
+    Car(std::string regNO, VehicleTypes type);
+};
+# 7 "C:\\Users\\Ajay_Jadhav1\\OneDrive\\MY_C++\\Cpp_practise\\CPP_Practise\\LLD\\ParkingLOT\\Ticket.hpp" 2
 class Ticket {
 public:
-    Ticket(const std::string& slotID);
+    Ticket(const std::string& slotID, Vehicle parkVehicle);
 
     std::string getTicketID() const;
     std::string getSlotID() const;
@@ -30763,6 +30784,8 @@ private:
     std::string slotID;
     std::chrono::steady_clock::time_point entryTime;
     std::chrono::steady_clock::time_point exitTime;
+    Vehicle ParkVehicle;
+
 };
 # 8 "C:\\Users\\Ajay_Jadhav1\\OneDrive\\MY_C++\\Cpp_practise\\CPP_Practise\\LLD\\ParkingLOT\\ParkingManager.hpp" 2
 
@@ -30775,7 +30798,7 @@ public:
     void GenerateParking();
     ParkingManager();
     virtual ParkingSlot* GetFreeParkingSlot(VehicleTypes type) = 0;
-    virtual void CreateTicket(ParkingSlot* parkSlot) = 0;
+    virtual void CreateTicket(ParkingSlot* parkSlot, Vehicle vehicle) = 0;
     virtual Ticket* GetTicketDetails(const std::string& id) = 0;
     virtual void UpdateTicketDetails(Ticket* ticket) = 0;
 };
@@ -30783,7 +30806,7 @@ public:
 class EntryManager : public ParkingManager {
 public:
     ParkingSlot* GetFreeParkingSlot(VehicleTypes type) override;
-    void CreateTicket(ParkingSlot* parkSlot) override;
+    void CreateTicket(ParkingSlot* parkSlot, Vehicle vehicle) override;
     void AllocateParking() override;
     Ticket* GetTicketDetails(const std::string& id) override;
     void UpdateTicketDetails(Ticket* ticket) override;
@@ -30794,7 +30817,7 @@ public:
     Ticket* GetTicketDetails(const std::string& id) override;
     void UpdateTicketDetails(Ticket* ticket) override;
     void AllocateParking() override;
-    void CreateTicket(ParkingSlot* parkSlot) override;
+    void CreateTicket(ParkingSlot* parkSlot, Vehicle vehicle) override;
     ParkingSlot* GetFreeParkingSlot(VehicleTypes type) override;
 };
 # 2 "C:\\Users\\Ajay_Jadhav1\\OneDrive\\MY_C++\\Cpp_practise\\CPP_Practise\\LLD\\ParkingLOT\\ParkingManager.cpp" 2
@@ -40154,9 +40177,9 @@ ParkingSlot* EntryManager::GetFreeParkingSlot(VehicleTypes type) {
     return nullptr;
 }
 
-void EntryManager::CreateTicket(ParkingSlot* parkSlot) {
+void EntryManager::CreateTicket(ParkingSlot* parkSlot, Vehicle vehicle) {
     if (parkSlot != nullptr) {
-        Ticket* ticket = new Ticket(parkSlot->slotID);
+        Ticket* ticket = new Ticket(parkSlot->slotID, vehicle);
         AllTicketsList.push_back(ticket);
         parkSlot->parkVehicle();
         std::cout << "Ticket created for slot " << parkSlot->slotID << std::endl;
@@ -40205,7 +40228,7 @@ void ExitManager::AllocateParking() {
 
 }
 
-void ExitManager::CreateTicket(ParkingSlot* parkSlot) {
+void ExitManager::CreateTicket(ParkingSlot* parkSlot, Vehicle vehicle) {
     if (parkSlot != nullptr) {
         parkSlot->releaseSlot();
         std::cout << "Ticket closed for slot " << parkSlot->slotID << std::endl;

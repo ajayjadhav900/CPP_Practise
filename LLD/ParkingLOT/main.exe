@@ -40082,25 +40082,52 @@ namespace std
 
 }
 # 6 "C:\\Users\\Ajay_Jadhav1\\OneDrive\\MY_C++\\Cpp_practise\\CPP_Practise\\LLD\\ParkingLOT\\Ticket.hpp" 2
+# 1 "C:\\Users\\Ajay_Jadhav1\\OneDrive\\MY_C++\\Cpp_practise\\CPP_Practise\\LLD\\ParkingLOT\\Vehicle.hpp" 1
 
 
-# 7 "C:\\Users\\Ajay_Jadhav1\\OneDrive\\MY_C++\\Cpp_practise\\CPP_Practise\\LLD\\ParkingLOT\\Ticket.hpp"
+
+
+# 4 "C:\\Users\\Ajay_Jadhav1\\OneDrive\\MY_C++\\Cpp_practise\\CPP_Practise\\LLD\\ParkingLOT\\Vehicle.hpp"
+class Vehicle
+{
+public:
+    std::string RegNo;
+    VehicleTypes Type;
+
+};
+class Bike : public Vehicle
+{
+public:
+    Bike(std::string regNO, VehicleTypes type);
+};
+class Car : public Vehicle
+{
+public:
+    Car(std::string regNO, VehicleTypes type);
+};
+# 7 "C:\\Users\\Ajay_Jadhav1\\OneDrive\\MY_C++\\Cpp_practise\\CPP_Practise\\LLD\\ParkingLOT\\Ticket.hpp" 2
 class Ticket {
 public:
-    Ticket(const std::string& slotID);
+    Ticket(const std::string& slotID, Vehicle parkVehicle);
 
     std::string getTicketID() const;
     std::string getSlotID() const;
     std::chrono::steady_clock::time_point getEntryTime() const;
     std::chrono::steady_clock::time_point getExitTime() const;
-
+    double getExitTimeinSecs () const;
+    Vehicle & GetVehicleData();
     void setExitTime();
+    int EstimateCost();
 
 private:
     std::string ticketID;
     std::string slotID;
     std::chrono::steady_clock::time_point entryTime;
     std::chrono::steady_clock::time_point exitTime;
+    double exitTimeInSeconds;
+    Vehicle ParkVehicle;
+    int cost;
+
 };
 # 8 "C:\\Users\\Ajay_Jadhav1\\OneDrive\\MY_C++\\Cpp_practise\\CPP_Practise\\LLD\\ParkingLOT\\ParkingManager.hpp" 2
 
@@ -40113,7 +40140,7 @@ public:
     void GenerateParking();
     ParkingManager();
     virtual ParkingSlot* GetFreeParkingSlot(VehicleTypes type) = 0;
-    virtual void CreateTicket(ParkingSlot* parkSlot) = 0;
+    virtual void CreateTicket(ParkingSlot* parkSlot,const Vehicle& vehicle) = 0;
     virtual Ticket* GetTicketDetails(const std::string& id) = 0;
     virtual void UpdateTicketDetails(Ticket* ticket) = 0;
 };
@@ -40121,7 +40148,7 @@ public:
 class EntryManager : public ParkingManager {
 public:
     ParkingSlot* GetFreeParkingSlot(VehicleTypes type) override;
-    void CreateTicket(ParkingSlot* parkSlot) override;
+    void CreateTicket(ParkingSlot* parkSlot,const Vehicle& vehicle) override;
     void AllocateParking() override;
     Ticket* GetTicketDetails(const std::string& id) override;
     void UpdateTicketDetails(Ticket* ticket) override;
@@ -40132,12 +40159,15 @@ public:
     Ticket* GetTicketDetails(const std::string& id) override;
     void UpdateTicketDetails(Ticket* ticket) override;
     void AllocateParking() override;
-    void CreateTicket(ParkingSlot* parkSlot) override;
+    void CreateTicket(ParkingSlot* parkSlot, const Vehicle& vehicle) override;
     ParkingSlot* GetFreeParkingSlot(VehicleTypes type) override;
 };
 # 3 "C:\\Users\\Ajay_Jadhav1\\OneDrive\\MY_C++\\Cpp_practise\\CPP_Practise\\LLD\\ParkingLOT\\main.cpp" 2
 
-int main() {
+
+
+int main()
+{
     EntryManager entryManager;
     ExitManager exitManager;
 
@@ -40145,16 +40175,19 @@ int main() {
     entryManager.AllocateParking();
 
 
-    ParkingSlot* bikeSlot = entryManager.GetFreeParkingSlot(VehicleTypes::TWO_WHEELER);
+    ParkingSlot *bikeSlot = entryManager.GetFreeParkingSlot(VehicleTypes::TWO_WHEELER);
 
 
-    entryManager.CreateTicket(bikeSlot);
+    Car bk("MH14 GN8617", VehicleTypes::FOUR_WHEELER);
+    Vehicle &veh = bk;
+    entryManager.CreateTicket(bikeSlot, veh);
 
 
     std::string ticketID = "TKT1";
-    Ticket* ticket = entryManager.GetTicketDetails(ticketID);
+    Ticket *ticket = entryManager.GetTicketDetails(ticketID);
 
-    if (ticket != nullptr) {
+    if (ticket != nullptr)
+    {
 
 
         ticket->setExitTime();
@@ -40165,9 +40198,10 @@ int main() {
     exitManager.AllocateParking();
 
 
-    Ticket* exitTicket = exitManager.GetTicketDetails(ticketID);
+    Ticket *exitTicket = exitManager.GetTicketDetails(ticketID);
 
-    if (exitTicket != nullptr) {
+    if (exitTicket != nullptr)
+    {
 
 
         std::chrono::steady_clock::duration duration = exitTicket->getExitTime() - exitTicket->getEntryTime();
@@ -40175,7 +40209,12 @@ int main() {
 
         std::cout << "Ticket ID: " << exitTicket->getTicketID() << std::endl;
         std::cout << "Slot ID: " << exitTicket->getSlotID() << std::endl;
+        std::cout << "Vehile Reg no: " << exitTicket->GetVehicleData().RegNo.c_str();
+        VehicleTypes type = exitTicket->GetVehicleData().Type;
+        std::cout << " Vehicle Type: "<< static_cast<int>(type) << std::endl;
         std::cout << "Parking duration: " << parkingDuration << " minutes" << std::endl;
+        std::cout << "Cost of ticket: " << exitTicket->EstimateCost() << " rupees" << std::endl;
+
     }
 
     return 0;
