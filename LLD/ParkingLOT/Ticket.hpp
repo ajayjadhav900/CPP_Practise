@@ -1,9 +1,11 @@
 #ifndef TICKET_HPP
 #define TICKET_HPP
 
+
 #include <string>
 #include <chrono>
 #include "Vehicle.hpp"
+#include "Payment.hpp"
 class Ticket {
 public:
     Ticket(const std::string& slotID, Vehicle parkVehicle);
@@ -16,6 +18,7 @@ public:
     Vehicle & GetVehicleData();
     void setExitTime();
     int EstimateCost();
+    void DoThePayment(PaymentMode mode, int amt);
 
 private:
     std::string ticketID;
@@ -25,6 +28,7 @@ private:
     double exitTimeInSeconds;
     Vehicle ParkVehicle;
     int cost;
+    IPayment *Pay;
 
 };
 
