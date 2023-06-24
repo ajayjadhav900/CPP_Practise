@@ -1,7 +1,11 @@
 #include <iostream>
 #include "ParkingManager.hpp"
 /*
+<<<<<<< HEAD
+g++ -g -o parking_management ParkingSlot.cpp Payment.cpp Ticket.cpp ParkingManager.cpp vehicle.cpp main.cpp
+=======
 g++ -o parking_management ParkingSlot.cpp Payment.cpp Ticket.cpp ParkingManager.cpp vehicle.cpp main.cpp
+>>>>>>> main
 */
 int main()
 {
