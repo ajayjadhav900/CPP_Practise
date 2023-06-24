@@ -2,6 +2,7 @@
 #include "ATM.hpp"
 
 /*
+ATM LLD
 g++ -g -o atm_machine Transaction.cpp Account.cpp User.cpp card.cpp  ATM.cpp main.cpp
 */
 int main()
