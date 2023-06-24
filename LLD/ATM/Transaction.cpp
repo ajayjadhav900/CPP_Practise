@@ -1,5 +1,9 @@
 #include "Transaction.hpp"
+<<<<<<< HEAD
 #include <iostream>
+=======
+
+>>>>>>> b74dd271694420b45c105c3c44b6e670bb9c520f
 Transaction::Transaction()
 {
 }
@@ -23,10 +27,13 @@ void BalanceInquiry::GetAccountID(int accID)
     AccID = accID;
 }
 
+<<<<<<< HEAD
 void BalanceInquiry::SaveTheTransaction()
 {
 }
 
+=======
+>>>>>>> b74dd271694420b45c105c3c44b6e670bb9c520f
 Deposite::Deposite()
 {
     Amt = 0;
@@ -37,6 +44,7 @@ void Deposite::GetAmount(int amt)
     Amt = amt;
 }
 
+<<<<<<< HEAD
 void Deposite::SaveTheTransaction()
 {
     std::cout << "\n------------------------------\n";
@@ -49,6 +57,8 @@ void Deposite::SaveTheTransaction()
     std::cout << "\n------------------------------\n";
 }
 
+=======
+>>>>>>> b74dd271694420b45c105c3c44b6e670bb9c520f
 Withdraw::Withdraw()
 {
     Amt = 0;
@@ -59,10 +69,13 @@ void Withdraw::GetAmount(int amt)
     Amt = amt;
 }
 
+<<<<<<< HEAD
 void Withdraw::SaveTheTransaction()
 {
 }
 
+=======
+>>>>>>> b74dd271694420b45c105c3c44b6e670bb9c520f
 Transfer::Transfer()
 {
 }
@@ -81,7 +94,10 @@ void Transfer::GetSourceAccNo(int sourceAcc)
 {
     SourceAccNo = sourceAcc;
 }
+<<<<<<< HEAD
 
 void Transfer::SaveTheTransaction()
 {
 }
+=======
+>>>>>>> b74dd271694420b45c105c3c44b6e670bb9c520f
