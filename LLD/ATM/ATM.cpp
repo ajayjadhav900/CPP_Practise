@@ -1,7 +1,7 @@
 #include <iostream>
 #include "ATM.hpp"
 #include <algorithm>
-
+#include"Transaction.hpp"
 ATM::ATM()
 {
     CurrAccount = nullptr;
@@ -35,6 +35,7 @@ void ATM::StartTransaction(int crd, int pin)
         std::cout << "Select the transaction type: 1: DEPOSITE 2: WITHDRAW 3: DISPLAY BALANCE \n";
         std::cin >> temp;
         // temp=1;
+        // temp=1;
         if (temp == 1)
         {
             temp = 0;
@@ -47,6 +48,8 @@ void ATM::StartTransaction(int crd, int pin)
             CurrAccount->UpdateBalance(temp, TransType::DEPOSITE);
             ATMTrasn.push_back(D1);
             CurrAccount->DisplayBalance();
+            std::cout << "Do u need reciept(Y/N):";
+            D1.SaveTheTransaction();
             std::cout << "Do u need reciept(Y/N):";
             D1.SaveTheTransaction();
         }
