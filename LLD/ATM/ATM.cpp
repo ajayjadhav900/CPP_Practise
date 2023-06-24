@@ -42,11 +42,7 @@ void ATM::StartTransaction(int crd, int pin)
 
             std::cout << "Select amount for deposite: ";
             std::cin >> temp;
-<<<<<<< HEAD
             Deposite D1(111, TransactionStatus::SUCCESS, "23-Jun-2023", temp);
-=======
-            Deposite D1(111,TransactionStatus::SUCCESS,"23-Jun-2023", temp);
->>>>>>> b74dd271694420b45c105c3c44b6e670bb9c520f
 
             CurrAccount->UpdateBalance(temp, TransType::DEPOSITE);
             ATMTrasn.push_back(D1);
@@ -61,11 +57,7 @@ void ATM::StartTransaction(int crd, int pin)
             std::cout << "Select amount for withdraw: ";
             std::cin >> temp;
             CurrAccount->UpdateBalance(temp, TransType::WITHDRAW);
-<<<<<<< HEAD
             Transaction T1(111, TransactionStatus::SUCCESS, "23-Jun-2023");
-=======
-            Transaction T1(111,TransactionStatus::SUCCESS,"23-Jun-2023");
->>>>>>> b74dd271694420b45c105c3c44b6e670bb9c520f
             ATMTrasn.push_back(T1);
             CurrAccount->DisplayBalance();
         }
