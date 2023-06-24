@@ -1,4 +1,7 @@
+<<<<<<< HEAD
+=======
 #include"Account.hpp"
+>>>>>>> b74dd271694420b45c105c3c44b6e670bb9c520f
 #include "Transaction.hpp"
 class User
 {

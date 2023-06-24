@@ -2,7 +2,9 @@
 enum class TransType
 {
     WITHDRAW,
-    DEPOSITE
+    DEPOSITE,
+    TRANSFER,
+    BALANCE
 };
 class Account
 {
