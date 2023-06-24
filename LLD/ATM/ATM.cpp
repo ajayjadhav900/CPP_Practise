@@ -39,9 +39,13 @@ void ATM::StartTransaction(int crd, int pin)
         {
             temp = 0;
             ATMUser.SelectTransactionType(TransType::DEPOSITE);
+
             std::cout << "Select amount for deposite: ";
             std::cin >> temp;
+            Deposite D1(111,TransactionStatus::SUCCESS,"23-Jun-2023", temp);
+
             CurrAccount->UpdateBalance(temp, TransType::DEPOSITE);
+            ATMTrasn.push_back(D1);
             CurrAccount->DisplayBalance();
         }
         else if (temp == 2)
@@ -51,6 +55,8 @@ void ATM::StartTransaction(int crd, int pin)
             std::cout << "Select amount for withdraw: ";
             std::cin >> temp;
             CurrAccount->UpdateBalance(temp, TransType::WITHDRAW);
+            Transaction T1(111,TransactionStatus::SUCCESS,"23-Jun-2023");
+            ATMTrasn.push_back(T1);
             CurrAccount->DisplayBalance();
         }
         else if (temp == 3)

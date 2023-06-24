@@ -1,7 +1,9 @@
 #include "User.hpp"
 #include<iostream>
 
-User::User(){}
+User::User(){
+    UserTrans = nullptr;
+}
 
 void User::InsertCard()
 {
@@ -19,3 +21,4 @@ void User::SelectTransactionType(TransType type)
 {
     Type = type;
 }
+
