@@ -1,5 +1,5 @@
 #include <string>
-
+#include "Account.hpp"
 enum class TransactionStatus
 {
     SUCCESS,
@@ -17,6 +17,7 @@ class Transaction
     int TransID;
     TransactionStatus TransStatus;
     std::string CreationDate;
+    TransType TypeOfTransaction;
     void SaveTheTransaction();
 };
 class BalanceInquiry : public Transaction
@@ -27,6 +28,7 @@ class BalanceInquiry : public Transaction
        BalanceInquiry(int id, TransactionStatus status, std::string date, int accID)
         : Transaction(id, status, date), AccID(accID) {}
     void GetAccountID(int accID);
+    void SaveTheTransaction();
 };
 
 class Deposite : public Transaction
@@ -35,8 +37,11 @@ class Deposite : public Transaction
     public:
     Deposite();
     Deposite(int id, TransactionStatus status, std::string date, int amt)
-        : Transaction(id, status, date), Amt(amt) {}
+        : Transaction(id, status, date), Amt(amt) {
+            TypeOfTransaction = TransType::DEPOSITE;
+        }
     void GetAmount(int amt);
+    void SaveTheTransaction();
 };
 
 class Withdraw : public Transaction
@@ -45,6 +50,7 @@ class Withdraw : public Transaction
     public:
     Withdraw();
     void GetAmount(int amt);
+    void SaveTheTransaction();
 };
 
 class Transfer : public Transaction
@@ -57,4 +63,5 @@ class Transfer : public Transaction
     void GetAmount(int amt);
     void GetDestAccNo(int destAcc);
     void GetSourceAccNo(int sourceAcc);
+    void SaveTheTransaction();
 };
