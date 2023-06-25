@@ -1,4 +1,5 @@
 #include <string>
+/*This is account class*/
 enum class TransType
 {
     WITHDRAW,
