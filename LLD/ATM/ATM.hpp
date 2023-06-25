@@ -5,8 +5,8 @@ class ATM
 {
 public:
     std::vector<card> CardVec;
-    std::vector<Account> AccountVec;
-    std::vector<Transaction> ATMTrasn;
+    std::vector<Account *> AccountVec;
+    std::vector<Transaction *> ATMTrasn;
     Transaction *CurrTrans;
     User ATMUser;
     Account *CurrAccount;

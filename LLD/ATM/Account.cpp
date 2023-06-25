@@ -1,15 +1,6 @@
 #include "Account.hpp"
 #include <iostream>
 
-Account::Account()
-{
-}
-
-Account::Account(std::string accno, int card) : AccNo(accno), card(card)
-{
-    balance = 0;
-}
-
 void Account::UpdateBalance(int amt, TransType type)
 {
     if (type == TransType::DEPOSITE)
@@ -29,7 +20,13 @@ void Account::UpdateBalance(int amt, TransType type)
     }
 }
 
-void Account::DisplayBalance()
+
+int SavingAccount::GetAvailableBalance()
 {
-    std::cout << "Balance in the account is " << balance << std::endl;
+    return balance;
+}
+
+int CheckingAccount::GetAvailableBalance()
+{
+    return balance;
 }

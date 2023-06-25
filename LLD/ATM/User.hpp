@@ -1,12 +1,12 @@
 #include "Transaction.hpp"
 class User
 {
-    public:
+public:
     int Pin;
     int Card;
     TransType Type;
     Transaction *UserTrans;
-
+    Account *UserAcc;
     User();
     void InsertCard();
     void EnterPin();
