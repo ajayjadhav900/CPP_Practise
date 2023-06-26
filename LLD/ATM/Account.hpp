@@ -1,15 +1,13 @@
 #include <string>
-<<<<<<< HEAD
 /*This is account class*/
-=======
->>>>>>> a3d2e1b (ATM: CheckDEPOSITE and SAVINGACCOUNT are inherited for Account)
 enum class TransType
 {
     WITHDRAW,
     DEPOSITE,
     TRANSFER,
     BALANCE,
-    CHECK_DEPOSITE
+    CHECK_DEPOSITE,
+    MINI_STATEMENT
 };
 class Account
 {

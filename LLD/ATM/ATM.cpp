@@ -31,7 +31,7 @@ void ATM::StartTransaction(int crd, int pin)
             return;
         }
         int temp;
-        std::cout << "Select the transaction type: 1: DEPOSITE 2: WITHDRAW 3: DISPLAY BALANCE 4:CHECK DEPOSITE\n";
+        std::cout << "Select the transaction type: 1: DEPOSITE 2: WITHDRAW 3: DISPLAY BALANCE 4:CHECK DEPOSITE 5: Print Mini Statement\n";
         std::cin >> temp;
 
         if (temp == 1)
@@ -40,11 +40,12 @@ void ATM::StartTransaction(int crd, int pin)
             ATMUser.SelectTransactionType(TransType::DEPOSITE);
             std::cout << "Select amount for deposite: ";
             std::cin >> temp;
-            Transaction *tr = new Deposite(111, temp, TransactionStatus::SUCCESS, "23-Jun-2023", 2222, TransType::DEPOSITE);
+            Transaction *tr = new CashDeposite(111, temp, TransactionStatus::SUCCESS, "23-Jun-2023", 2222, TransType::DEPOSITE);
             CurrAccount->UpdateBalance(temp, TransType::DEPOSITE);
             ATMTrasn.push_back(tr);
             std::cout << "Do u need reciept(Y/N):";
             tr->SaveTheTransaction();
+            ATMUser.SaveTransactionStatement(tr);
         }
         else if (temp == 2)
         {
@@ -57,16 +58,18 @@ void ATM::StartTransaction(int crd, int pin)
             ATMTrasn.push_back(tr);
             std::cout << "Do u need reciept(Y/N):";
             tr->SaveTheTransaction();
+            ATMUser.SaveTransactionStatement(tr);
         }
         else if (temp == 3)
         {
             temp = 0;
             ATMUser.SelectTransactionType(TransType::BALANCE);
-            Transaction *tr = new BalanceInquiry(113, temp, TransactionStatus::SUCCESS, "23-Jun-2023", 2222, TransType::WITHDRAW);
-            CurrAccount->UpdateBalance(temp, TransType::WITHDRAW);
+            CurrAccount->GetAvailableBalance();
+            Transaction *tr = new BalanceInquiry(113, CurrAccount->GetAvailableBalance(), TransactionStatus::SUCCESS, "23-Jun-2023", 2222, TransType::WITHDRAW);
             ATMTrasn.push_back(tr);
             std::cout << "Do u need reciept(Y/N):";
             tr->SaveTheTransaction();
+            ATMUser.SaveTransactionStatement(tr);
         }
         else if (temp == 4)
         {
@@ -77,6 +80,13 @@ void ATM::StartTransaction(int crd, int pin)
             ATMTrasn.push_back(tr);
             std::cout << "Do u need reciept(Y/N):";
             tr->SaveTheTransaction();
+            ATMUser.SaveTransactionStatement(tr);
+        }
+        else if (temp == 5)
+        {
+            temp = 0;
+            ATMUser.SelectTransactionType(TransType::MINI_STATEMENT);
+            ATMUser.PrintStatement();
         }
         else
         {

@@ -22,10 +22,10 @@ void Deposite::GetAmount(int amt)
 {
 }
 
-void Deposite::SaveTheTransaction()
+void CashDeposite::SaveTheTransaction()
 {
     std::cout << "\n------------------------------\n";
-    std::cout << "\n-------DEPOSITE RECIEPT----------\n";
+    std::cout << "\n-------CASH DEPOSITE RECIEPT----------\n";
     std::cout << "TranID: " << TransID << std::endl;
     std::cout << "Transaction Status: " << static_cast<int>(TransStatus) << std::endl;
     std::cout << "Date: " << CreationDate.c_str() << std::endl;
@@ -61,10 +61,6 @@ void Transfer::GetSourceAccNo(int sourceAcc)
 }
 
 void Transfer::SaveTheTransaction()
-{
-}
-
-void CheckDeposite::GetAmount(int amt)
 {
 }
 
