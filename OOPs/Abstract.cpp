@@ -28,7 +28,7 @@ public:
 
 // Usage:
 int main() {
-    GameEntity* player = new GameEntity();
+    GameEntity* player = new Enemy();
     player->move();
     player->getPosition();
 
