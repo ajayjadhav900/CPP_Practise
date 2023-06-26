@@ -21,7 +21,7 @@ void User::SelectTransactionType(TransType type)
     Type = type;
 }
 
-void User::SaveTransactionStatement(Transaction *trans)
+void User::SaveTransactionStatement(const Transaction *trans)
 {
     UserTrans.emplace_front(trans);
 }
