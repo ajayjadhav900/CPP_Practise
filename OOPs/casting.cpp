@@ -1,65 +1,54 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
 
-class Shape
+class Vehicle
 {
 public:
-    virtual void printArea() const = 0;
-};
-
-class Circle : public Shape
-{
-private:
-    double radius;
-
-public:
-    Circle(double r) : radius(r) {}
-
-    void printArea() const override
+     Vehicle()
     {
-        double area = 3.14159 * radius * radius;
-        std::cout << "Circle Area: " << area << std::endl;
+    }
+        virtual void display()
+    {
+        cout << "I am Vehicle";
     }
 };
-
-class Rectangle : public Shape
+class Car : public Vehicle
 {
-private:
-    double width;
-    double height;
-
 public:
-    Rectangle(double w, double h) : width(w), height(h) {}
-
-    void printArea() const override
+     Car()
     {
-        double area = width * height;
-        std::cout << "Rectangle Area: " << area << std::endl;
+        
+    }
+        void display()
+    {
+        cout << "I am Car";
     }
 };
-
+class Bike : public Vehicle
+{
+public:
+     Bike()
+    {
+        
+    }
+    void display()
+    {
+        cout << "I am Bike";
+    }
+};
 int main()
 {
-    Shape *shape1 = new Circle(5.0);
-    Shape *shape2 = new Rectangle(3.0, 4.0);
-
-    // Casting shape1 to Circle and calling specific Circle methods
-    Circle *circlePtr = static_cast<Circle *>(shape1);
-    if (circlePtr != nullptr)
-    {
-        std::cout << "Circle specific method called: ";
-        circlePtr->printArea();
+    Bike C1;
+    
+    Vehicle *veh2 = static_cast<Vehicle *>(&C1);
+    veh2->display();
+    Bike *bk = dynamic_cast<Bike *>(veh2); 
+    if (bk != nullptr) {
+        bk->display();
+    } else {
+        std::cout << "Dynamic cast failed." << std::endl;
     }
-
-    // Casting shape2 to Rectangle and calling specific Rectangle methods
-    Rectangle *rectanglePtr = dynamic_cast<Rectangle *>(shape1);
-    if (rectanglePtr != nullptr)
-    {
-        std::cout << "Rectangle specific method called: ";
-        rectanglePtr->printArea();
-    }
-
-    delete shape1;
-    delete shape2;
-
     return 0;
 }

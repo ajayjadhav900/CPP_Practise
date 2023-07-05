@@ -1,84 +1,85 @@
-#include "Factory2.hpp"
-#include "string"
 #include <iostream>
+#include <vector>
+#include <algorithm> // Include the <algorithm> header
 using namespace std;
-int Kia::GetCarPrice()
-{
-    return 120000;
-}
 
-std::string Kia::GetCarModel()
+class Product
 {
-    return "Sonet";
-}
-
-std::string Kia::GetCarColour()
-{
-    return "Dark redish";
-}
-
-int Hundai::GetCarPrice()
-{
-    return 900000;
-}
-
-std::string Hundai::GetCarModel()
-{
-    return "Venue";
-}
-
-std::string Hundai::GetCarColour()
-{
-    return "Dark Blue";
-}
-
-int BMW::GetCarPrice()
-{
-    return 8000000;
-}
-
-std::string BMW::GetCarModel()
-{
-    return "X7";
-}
-
-std::string BMW::GetCarColour()
-{
-    return "Dark Silver";
-}
-
-ICar *FactoryCars::GetCarDetails(std::string model)
-{
-    ICar *CarDetails = nullptr;
-    if (model.compare("Sonet") == 0)
+public:
+    virtual ~Product()
     {
-        CarDetails = new Kia();
     }
+};
 
-    else if (model.compare("Venue") == 0)
+class ConcreteProduct1 : public Product
+{
+public:
+    ConcreteProduct1()
     {
-        CarDetails = new Hundai();
+        cout << "I am ConcreteProduct1" << endl;
     }
+    virtual ~ConcreteProduct1()
+    {
+    }
+};
 
-    else if (model.compare("X7") == 0)
+class ConcreteProduct2 : public Product
+{
+public:
+    ConcreteProduct2()
     {
-        CarDetails = new BMW();
+        cout << "I am ConcreteProduct2" << endl;
     }
-    return CarDetails;
-}
+    virtual ~ConcreteProduct2()
+    {
+    }
+};
+
+class Creater
+{
+
+public:
+    virtual Product *FactoryMethod() = 0;
+
+    virtual ~Creater()
+    {
+    }
+};
+class ConcreteCreater1 : public Creater
+{
+
+public:
+    virtual ~ConcreteCreater1()
+    {
+    }
+    Product *FactoryMethod()
+    {
+        Product *pr = nullptr;
+        pr = new ConcreteProduct1();
+        return pr;
+    }
+};
+
+class ConcreteCreater2 : public Creater
+{
+
+public:
+    virtual ~ConcreteCreater2()
+    {
+    }
+    Product *FactoryMethod()
+    {
+        Product *pr = nullptr;
+
+        pr = new ConcreteProduct2();
+        return pr;
+    }
+};
 
 int main()
 {
-
-    ICar *CarDetails = nullptr;
-    string model("X7");
-    cout << "Enter car model";
-    // cin>>model;
-
-    CarDetails = FactoryCars::GetCarDetails(model);
-    cout<<CarDetails->GetCarModel().c_str()<<endl;
-    cout << CarDetails->GetCarColour().c_str()<<endl;
-    cout << CarDetails->GetCarPrice();
-
+    Creater *cr = new ConcreteCreater1();
+    cr->FactoryMethod();
+    delete cr;
     return 0;
 }
