@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include<memory>
 class PoweredDevice
 {
 public:
@@ -7,9 +7,13 @@ public:
     {
         std::cout << "PoweredDevice: " << power << '\n';
     }
+        PoweredDevice()
+    {
+        std::cout << "PoweredDevice: "  << '\n';
+    }
 };
 
-class Scanner : virtual public PoweredDevice
+class Scanner :  public PoweredDevice
 {
 
 public:
@@ -20,7 +24,7 @@ public:
     }
 };
 
-class Printer : virtual public PoweredDevice
+class Printer :  public PoweredDevice
 {
 public:
     Printer(int printer, int power)
@@ -34,7 +38,7 @@ class Copier : public Scanner, public Printer
 {
 public:
     Copier(int scanner, int printer, int power)
-        : PoweredDevice{power}, // PoweredDevice is constructed here
+        : //PoweredDevice{power}, // PoweredDevice is constructed here
           Scanner{scanner, power}, Printer{printer, power}
     {
     }
@@ -43,6 +47,8 @@ public:
 int main()
 {
     Copier copier{1, 2, 3};
+
+
 
     return 0;
 }
