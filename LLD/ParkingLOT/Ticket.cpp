@@ -7,7 +7,8 @@ Ticket::Ticket(const std::string &slotID, Vehicle parkVehicle)
     // For simplicity, let's assume it's based on the current time
     ticketID = "TKT1";
     ParkVehicle = parkVehicle;
-    Pay=nullptr;
+    Pay = nullptr;
+    Status = TicketStatus::IDLE;
 }
 
 std::string Ticket::getTicketID() const
@@ -86,4 +87,17 @@ void Ticket::DoThePayment(PaymentMode mode, int amt)
     {
         Pay = nullptr;
     }
+}
+
+void Ticket::SetStatus(char choice)
+{
+    if (choice == 'A')
+        Status = TicketStatus::ACTIVE;
+    else if (choice == 'P')
+        Status = TicketStatus::PAID;
+}
+
+TicketStatus Ticket::GetStatus()
+{
+    return Status;
 }

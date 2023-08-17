@@ -1,11 +1,7 @@
 #include <iostream>
 #include "ParkingManager.hpp"
 /*
-<<<<<<< HEAD
 g++ -g -o parking_management ParkingSlot.cpp Payment.cpp Ticket.cpp ParkingManager.cpp vehicle.cpp main.cpp
-=======
-g++ -o parking_management ParkingSlot.cpp Payment.cpp Ticket.cpp ParkingManager.cpp vehicle.cpp main.cpp
->>>>>>> main
 */
 int main()
 {
@@ -26,7 +22,7 @@ int main()
     // Get the ticket details
     std::string ticketID = "TKT1"; // Assuming a valid ticket ID
     Ticket *ticket = entryManager.GetTicketDetails(ticketID);
-
+    std::cout << "Ticket Status: " << static_cast<int>(ticket->GetStatus()) << std::endl;
     if (ticket != nullptr)
     {
         // Perform operations with the ticket
@@ -37,10 +33,9 @@ int main()
     entryManager.AllocateParking();
     exitManager.AllTicketsList = entryManager.AllTicketsList;
     // Perform exit operations
-
+    exitManager.AllParkingVec = entryManager.AllParkingVec;
     // Get the ticket details at the exit
     Ticket *exitTicket = exitManager.GetTicketDetails(ticketID);
-
     if (exitTicket != nullptr)
     {
         // Perform operations with the ticket at the exit
@@ -49,6 +44,7 @@ int main()
         long long parkingDuration = std::chrono::duration_cast<std::chrono::minutes>(duration).count();
 
         std::cout << "Ticket ID: " << exitTicket->getTicketID() << std::endl;
+        std::cout << "Ticket Status: " << static_cast<int>(ticket->GetStatus()) << std::endl;
         std::cout << "Slot ID: " << exitTicket->getSlotID() << std::endl;
         std::cout << "Vehile Reg no: " << exitTicket->GetVehicleData().RegNo.c_str();
         VehicleTypes type = exitTicket->GetVehicleData().Type;
@@ -58,6 +54,8 @@ int main()
         std::cout << "Payment: " << std::endl;
         exitTicket->DoThePayment(PaymentMode::ONLINEAPP, exitTicket->EstimateCost());
     }
+    auto slot = exitManager.GetTheParkingSlot("B1");
+    slot->releaseSlot();
 
     return 0;
 }
