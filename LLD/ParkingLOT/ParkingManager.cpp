@@ -5,11 +5,9 @@ using namespace std;
 
 void ParkingManager::GenerateParking()
 {
+    GroundFloorParking.GenerateParking();
+    
     // Create and initialize the parking slots
-    AllParkingVec.push_back(new BikeParkingSlot("B1", false));
-    AllParkingVec.push_back(new BikeParkingSlot("B2", true));
-    AllParkingVec.push_back(new CarParkingSlot("C1", false));
-    AllParkingVec.push_back(new CarParkingSlot("C2", true));
     // Add more parking slots as needed
 }
 
@@ -20,7 +18,7 @@ ParkingManager::ParkingManager()
 
 ParkingSlot *ParkingManager::GetTheParkingSlot(std::string slotid)
 {
-    for (ParkingSlot *slot : AllParkingVec)
+    for (ParkingSlot *slot : GroundFloorParking.AllParkingVec)
     {
         if (slot->slotID == slotid)
         {
@@ -34,10 +32,11 @@ ParkingSlot *ParkingManager::GetTheParkingSlot(std::string slotid)
 
 ParkingSlot *EntryManager::GetFreeParkingSlot(VehicleTypes type)
 {
-    for (ParkingSlot *slot : AllParkingVec)
+    for (ParkingSlot *slot : GroundFloorParking.AllParkingVec)
     {
         if (!slot->isOccupied && slot->getVehicleType() == type)
         {
+            slot->isOccupied= true;
             return slot;
         }
     }
@@ -87,7 +86,7 @@ void EntryManager::UpdateTicketDetails(Ticket *ticket)
 
 ParkingSlot *EntryManager::GetTheParkingSlot(std::string slotid)
 {
-    for (ParkingSlot *slot : AllParkingVec)
+    for (ParkingSlot *slot : GroundFloorParking.AllParkingVec)
     {
         if (slot->slotID == slotid)
         {
@@ -145,7 +144,7 @@ ParkingSlot *ExitManager::GetFreeParkingSlot(VehicleTypes type)
 
 ParkingSlot *ExitManager::GetTheParkingSlot(std::string slotid)
 {
-    for (ParkingSlot *slot : AllParkingVec)
+    for (ParkingSlot *slot : GroundFloorParking.AllParkingVec)
     {
         if (slot->slotID == slotid)
         {

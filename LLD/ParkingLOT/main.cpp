@@ -1,8 +1,8 @@
 #include <iostream>
 #include "ParkingManager.hpp"
 /*
-g++ -g -o parking_management ParkingSlot.cpp Payment.cpp Ticket.cpp ParkingManager.cpp vehicle.cpp main.cpp
-*/
+g++ -g -o parking_management ParkingSlot.cpp ParkingLot.cpp
+ Payment.cpp Ticket.cpp ParkingManager.cpp vehicle.cpp main.cpp*/
 int main()
 {
     EntryManager entryManager;
@@ -10,7 +10,7 @@ int main()
 
     // Example usage of the parking management system
     entryManager.AllocateParking();
-
+    entryManager.GroundFloorParking.PrintParkingSlots();
     // Get a free parking slot for a bike
     ParkingSlot *bikeSlot = entryManager.GetFreeParkingSlot(VehicleTypes::TWO_WHEELER);
 
@@ -31,9 +31,10 @@ int main()
         entryManager.UpdateTicketDetails(ticket);
     }
     entryManager.AllocateParking();
+    exitManager.GroundFloorParking.AllParkingVec = 
+    entryManager.GroundFloorParking.AllParkingVec;
     exitManager.AllTicketsList = entryManager.AllTicketsList;
     // Perform exit operations
-    exitManager.AllParkingVec = entryManager.AllParkingVec;
     // Get the ticket details at the exit
     Ticket *exitTicket = exitManager.GetTicketDetails(ticketID);
     if (exitTicket != nullptr)
@@ -55,6 +56,7 @@ int main()
         exitTicket->DoThePayment(PaymentMode::ONLINEAPP, exitTicket->EstimateCost());
     }
     auto slot = exitManager.GetTheParkingSlot("B1");
+    exitManager.GroundFloorParking.PrintParkingSlots();
     slot->releaseSlot();
 
     return 0;
