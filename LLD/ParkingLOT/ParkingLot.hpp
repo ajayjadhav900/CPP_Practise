@@ -12,6 +12,7 @@ public:
     int NoOfBikesParking{40};
     int NoOfTrucksParking{20};
     int FloorNo{0};
+    int currentParkSlots{0};
     list<ParkingSlot *> AllParkingVec;
 
     ParkingLot(int maxCapacity,

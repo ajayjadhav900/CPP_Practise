@@ -37,6 +37,7 @@ ParkingSlot *EntryManager::GetFreeParkingSlot(VehicleTypes type)
         if (!slot->isOccupied && slot->getVehicleType() == type)
         {
             slot->isOccupied= true;
+            GroundFloorParking.currentParkSlots++;
             return slot;
         }
     }

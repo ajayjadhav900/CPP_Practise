@@ -12,6 +12,11 @@ int main()
     entryManager.AllocateParking();
     entryManager.GroundFloorParking.PrintParkingSlots();
     // Get a free parking slot for a bike
+    if (entryManager.GroundFloorParking.currentParkSlots ==
+        entryManager.GroundFloorParking.MaxCapacity)
+    {
+        cout << "\nParking floor is Full!!!\n";
+    }
     ParkingSlot *bikeSlot = entryManager.GetFreeParkingSlot(VehicleTypes::TWO_WHEELER);
 
     // Create a ticket for the bike
@@ -31,8 +36,12 @@ int main()
         entryManager.UpdateTicketDetails(ticket);
     }
     entryManager.AllocateParking();
-    exitManager.GroundFloorParking.AllParkingVec = 
-    entryManager.GroundFloorParking.AllParkingVec;
+    exitManager.GroundFloorParking.AllParkingVec =
+        entryManager.GroundFloorParking.AllParkingVec;
+
+    exitManager.GroundFloorParking.currentParkSlots =
+        entryManager.GroundFloorParking.currentParkSlots;
+
     exitManager.AllTicketsList = entryManager.AllTicketsList;
     // Perform exit operations
     // Get the ticket details at the exit
@@ -56,7 +65,7 @@ int main()
         exitTicket->DoThePayment(PaymentMode::ONLINEAPP, exitTicket->EstimateCost());
     }
     auto slot = exitManager.GetTheParkingSlot("B1");
-    exitManager.GroundFloorParking.PrintParkingSlots();
+    cout << "\nCurrent Park slots are " << exitManager.GroundFloorParking.currentParkSlots<<endl;
     slot->releaseSlot();
 
     return 0;

@@ -53,6 +53,8 @@ void ParkingSlot::releaseSlot()
     {
         std::cout << "Slot " << slotID << " is already vacant" << std::endl;
     }
+
+    
 }
 
 // CarParkingSlot implementation
