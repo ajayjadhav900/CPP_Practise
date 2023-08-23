@@ -5,12 +5,12 @@
 #include <string>
 #include "ParkingSlot.hpp"
 #include "Ticket.hpp"
-
+#include"ParkingLot.hpp"
 class ParkingManager
 {
 public:
-    std::vector<ParkingSlot *> AllParkingVec;
     std::vector<Ticket *> AllTicketsList;
+    GroundFloor GroundFloorParking;
 
     virtual void AllocateParking() = 0;
     void GenerateParking();
