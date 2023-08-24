@@ -7,10 +7,10 @@ public:
     ParkingLot()
     {
     }
-    int MaxCapacity{100};
-    int NoOfCarParkings{40};
-    int NoOfBikesParking{40};
-    int NoOfTrucksParking{20};
+    int MaxCapacity{10};
+    int NoOfCarParkings{4};
+    int NoOfBikesParking{4};
+    int NoOfTrucksParking{2};
     int FloorNo{0};
     int currentParkSlots{0};
     list<ParkingSlot *> AllParkingVec;

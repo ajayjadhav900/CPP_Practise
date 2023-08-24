@@ -7,17 +7,17 @@ void GroundFloor::GenerateParking()
 {
     for (int i = 1; i <= NoOfBikesParking; ++i)
     {
-        AllParkingVec.push_back(new BikeParkingSlot("B" + to_string(i), false, i));
+        AllParkingVec.push_back(new BikeParkingSlot("B" + to_string(i), false, 0));
     }
 
     for (int i = 1; i <= NoOfCarParkings; ++i)
     {
-        AllParkingVec.push_back(new CarParkingSlot("C" + to_string(i), false, i));
+        AllParkingVec.push_back(new CarParkingSlot("C" + to_string(i), false, 0));
     }
 
     for (int i = 1; i <= NoOfTrucksParking; ++i)
     {
-        AllParkingVec.push_back(new TruckParkingSlot("T" + to_string(i), false, i));
+        AllParkingVec.push_back(new TruckParkingSlot("T" + to_string(i), false, 0));
     }
 }
 

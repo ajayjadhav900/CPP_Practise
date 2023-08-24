@@ -1,23 +1,27 @@
 #include <iostream>
 #include "ParkingAdmin.hpp"
 #include "ParkingAttendant.hpp"
+#include "ParkingDisplayDashboard.hpp"
+
 /*
 g++ -g -o parking_management ParkingSlot.cpp ParkingLot.cpp Vehicle.cpp Payment.cpp Ticket.cpp
-ParkingAdmin.cpp ParkingAttendant.cpp  main.cpp*/
+ParkingAdmin.cpp ParkingAttendant.cpp ParkingDisplayDashboard main.cpp*/
+
 int main()
 {
 
     ParkingAdmin admin;
     admin.GenerateParking();
     admin.GroundFloorParking.PrintParkingSlots();
+    ParkingDisplayDashboard Dashboard(admin.GroundFloorParking);
+    Dashboard.DisplaySlots(false);
+
     EntryManager entryManager(admin.GroundFloorParking);
     ExitManager exitManager(admin.GroundFloorParking);
 
-    // Get a free parking slot for a bike
-    if (entryManager.GroundFloorParking.currentParkSlots ==
-        entryManager.GroundFloorParking.MaxCapacity)
+    if (!Dashboard.GenerateParkingFullMessege())
     {
-        cout << "\nParking floor is Full!!!\n";
+        return;
     }
     ParkingSlot *bikeSlot = entryManager.GetFreeParkingSlot(VehicleTypes::TWO_WHEELER);
 
@@ -25,6 +29,8 @@ int main()
     Car bk("MH14 GN8617", VehicleTypes::FOUR_WHEELER);
     Vehicle &veh = bk;
     entryManager.CreateTicket(bikeSlot, veh);
+
+    Dashboard.DisplaySlots(true);
 
     // Get the ticket details
     std::string ticketID = "TKT1"; // Assuming a valid ticket ID
