@@ -1,22 +1,16 @@
-#include "ParkingManager.hpp"
+#include "ParkingAttendant.hpp"
+#include "ParkingLot.hpp"
 #include <iostream>
 using namespace std;
-// ParkingManager implementation
+// ParkingAttendant implementation
 
-void ParkingManager::GenerateParking()
+
+ParkingAttendant::ParkingAttendant(GroundFloor &groundFloorParking):
+GroundFloorParking(groundFloorParking)
 {
-    GroundFloorParking.GenerateParking();
-    
-    // Create and initialize the parking slots
-    // Add more parking slots as needed
 }
 
-ParkingManager::ParkingManager()
-{
-    GenerateParking();
-}
-
-ParkingSlot *ParkingManager::GetTheParkingSlot(std::string slotid)
+ParkingSlot *ParkingAttendant::GetTheParkingSlot(std::string slotid)
 {
     for (ParkingSlot *slot : GroundFloorParking.AllParkingVec)
     {
@@ -29,6 +23,10 @@ ParkingSlot *ParkingManager::GetTheParkingSlot(std::string slotid)
 }
 
 // EntryManager implementation
+
+EntryManager::EntryManager(GroundFloor& groundFloorParking):ParkingAttendant(groundFloorParking)
+{
+}
 
 ParkingSlot *EntryManager::GetFreeParkingSlot(VehicleTypes type)
 {
@@ -98,6 +96,11 @@ ParkingSlot *EntryManager::GetTheParkingSlot(std::string slotid)
 }
 
 // ExitManager implementation
+
+ExitManager::ExitManager(GroundFloor& groundFloorParking):ParkingAttendant(groundFloorParking)
+{
+}
+
 
 Ticket *ExitManager::GetTicketDetails(const std::string &id)
 {

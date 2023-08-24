@@ -1,63 +1,98 @@
 #include "ParkingSlot.hpp"
 #include <iostream>
-
+#include <string>
+using namespace std;
 // ParkingSlot implementation
 
-ParkingSlot::ParkingSlot(const std::string& id, bool occupied)
-    : slotID(id), isOccupied(occupied) {}
+ParkingSlot::ParkingSlot(const std::string &id, bool occupied, int floorNo)
+    : slotID(id), isOccupied(occupied), FloorNo(floorNo) {}
 
 ParkingSlot::~ParkingSlot() {}
 
-// BikeParkingSlot implementation
-
-BikeParkingSlot::BikeParkingSlot(const std::string& id, bool occupied)
-    : ParkingSlot(id, occupied) {}
-
-VehicleTypes BikeParkingSlot::getVehicleType() const {
-    return VehicleTypes::TWO_WHEELER;
-}
-
-void BikeParkingSlot::parkVehicle() {
-    if (!isOccupied) {
+void ParkingSlot::parkVehicle()
+{
+    if (!isOccupied)
+    {
         isOccupied = true;
-        std::cout << "Bike parked in slot " << slotID << std::endl;
-    } else {
+        std::cout << "Vehicle with type parked in slot " << static_cast<int>(getVehicleType()) << slotID << std::endl;
+    }
+    else
+    {
         std::cout << "Slot " << slotID << " is already occupied" << std::endl;
     }
 }
 
-void BikeParkingSlot::releaseSlot() {
-    if (isOccupied) {
+// BikeParkingSlot implementation
+
+BikeParkingSlot::BikeParkingSlot(const std::string &id, bool occupied, int floorNo)
+    : ParkingSlot(id, occupied, floorNo) {}
+
+VehicleTypes BikeParkingSlot::getVehicleType() const
+{
+    return VehicleTypes::TWO_WHEELER;
+}
+
+string BikeParkingSlot::GetSlotID()
+{
+    return slotID;
+}
+
+bool BikeParkingSlot::IsOccupied()
+{
+    return isOccupied;
+}
+
+void ParkingSlot::releaseSlot()
+{
+    if (isOccupied)
+    {
         isOccupied = false;
-        std::cout << "Bike released from slot " << slotID << std::endl;
-    } else {
+        std::cout << "Vehicle released from slot " << slotID << std::endl;
+    }
+    else
+    {
         std::cout << "Slot " << slotID << " is already vacant" << std::endl;
     }
+
+    
 }
 
 // CarParkingSlot implementation
 
-CarParkingSlot::CarParkingSlot(const std::string& id, bool occupied)
-    : ParkingSlot(id, occupied) {}
+CarParkingSlot::CarParkingSlot(const std::string &id, bool occupied, int floorNo)
+    : ParkingSlot(id, occupied, FloorNo) {}
 
-VehicleTypes CarParkingSlot::getVehicleType() const {
+VehicleTypes CarParkingSlot::getVehicleType() const
+{
     return VehicleTypes::FOUR_WHEELER;
 }
 
-void CarParkingSlot::parkVehicle() {
-    if (!isOccupied) {
-        isOccupied = true;
-        std::cout << "Car parked in slot " << slotID << std::endl;
-    } else {
-        std::cout << "Slot " << slotID << " is already occupied" << std::endl;
-    }
+string CarParkingSlot::GetSlotID()
+{
+    return slotID;
 }
 
-void CarParkingSlot::releaseSlot() {
-    if (isOccupied) {
-        isOccupied = false;
-        std::cout << "Car released from slot " << slotID << std::endl;
-    } else {
-        std::cout << "Slot " << slotID << " is already vacant" << std::endl;
-    }
+bool CarParkingSlot::IsOccupied()
+{
+    return isOccupied;
+}
+
+TruckParkingSlot::TruckParkingSlot(const std::string &id, bool occupied, int floorNo)
+    : ParkingSlot(id, occupied, floorNo)
+{
+}
+
+VehicleTypes TruckParkingSlot::getVehicleType() const
+{
+    return VehicleTypes::TRUCK;
+}
+
+string TruckParkingSlot::GetSlotID()
+{
+    return slotID;
+}
+
+bool TruckParkingSlot::IsOccupied()
+{
+    return isOccupied;
 }

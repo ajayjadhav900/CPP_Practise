@@ -6,6 +6,12 @@
 #include <chrono>
 #include "Vehicle.hpp"
 #include "Payment.hpp"
+enum class TicketStatus
+{
+    IDLE,
+    ACTIVE,
+    PAID
+};
 class Ticket {
 public:
     Ticket(const std::string& slotID, Vehicle parkVehicle);
@@ -19,7 +25,8 @@ public:
     void setExitTime();
     int EstimateCost();
     void DoThePayment(PaymentMode mode, int amt);
-
+    void SetStatus(char ch);
+    TicketStatus GetStatus();
 private:
     std::string ticketID;
     std::string slotID;
@@ -28,6 +35,7 @@ private:
     double exitTimeInSeconds;
     Vehicle ParkVehicle;
     int cost;
+    TicketStatus Status;
     IPayment *Pay;
 
 };

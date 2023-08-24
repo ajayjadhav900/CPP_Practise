@@ -3,39 +3,39 @@
 
 #include <vector>
 #include <string>
-#include "ParkingSlot.hpp"
 #include "Ticket.hpp"
-#include"ParkingLot.hpp"
-class ParkingManager
+class GroundFloor;
+class ParkingAttendant
 {
 public:
     std::vector<Ticket *> AllTicketsList;
-    GroundFloor GroundFloorParking;
-
-    virtual void AllocateParking() = 0;
-    void GenerateParking();
-    ParkingManager();
+    GroundFloor &GroundFloorParking;
+    ParkingAttendant(GroundFloor &groundFloorParking);
     virtual ParkingSlot *GetFreeParkingSlot(VehicleTypes type) = 0;
     virtual ParkingSlot *GetTheParkingSlot(std::string slotid);
     virtual void CreateTicket(ParkingSlot *parkSlot, const Vehicle &vehicle) = 0;
     virtual Ticket *GetTicketDetails(const std::string &id) = 0;
     virtual void UpdateTicketDetails(Ticket *ticket) = 0;
+    virtual void AllocateParking() = 0;
 };
 
-class EntryManager : public ParkingManager
+class EntryManager : public ParkingAttendant
 {
 public:
+    EntryManager(GroundFloor &groundFloorParking);
     ParkingSlot *GetFreeParkingSlot(VehicleTypes type) override;
     void CreateTicket(ParkingSlot *parkSlot, const Vehicle &vehicle) override;
-    void AllocateParking() override;
+
     Ticket *GetTicketDetails(const std::string &id) override;
     void UpdateTicketDetails(Ticket *ticket) override;
     virtual ParkingSlot *GetTheParkingSlot(std::string slotid) override;
+    void AllocateParking() override;
 };
 
-class ExitManager : public ParkingManager
+class ExitManager : public ParkingAttendant
 {
 public:
+    ExitManager(GroundFloor &groundFloorParking);
     Ticket *GetTicketDetails(const std::string &id) override;
     void UpdateTicketDetails(Ticket *ticket) override;
     void AllocateParking() override;
