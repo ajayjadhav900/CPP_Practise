@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "Ticket.hpp"
+class ParkingDisplayDashboard;
 class GroundFloor;
 class ParkingAttendant
 {
@@ -26,7 +27,8 @@ public:
 class EntryManager : public ParkingAttendant
 {
 public:
-    EntryManager(GroundFloor &groundFloorParking);
+    ParkingDisplayDashboard &Dashboard;
+    EntryManager(GroundFloor &groundFloorParking, ParkingDisplayDashboard & Dashboard);
     ParkingSlot *GetFreeParkingSlot(VehicleTypes type) override;
     void CreateTicket(ParkingSlot *parkSlot, const Vehicle &vehicle) override;
 
@@ -34,6 +36,8 @@ public:
     void UpdateTicketDetails(Ticket *ticket) override;
     virtual ParkingSlot *GetTheParkingSlot(std::string slotid) override;
     void AllocateParking() override;
+
+    void StartWorking();
 };
 
 class ExitManager : public ParkingAttendant
@@ -46,6 +50,8 @@ public:
     void CreateTicket(ParkingSlot *parkSlot, const Vehicle &vehicle) override;
     ParkingSlot *GetFreeParkingSlot(VehicleTypes type) override;
     virtual ParkingSlot *GetTheParkingSlot(std::string slotid) override;
+    void StartWorking();
+    void printSeparator();
 };
 
 #endif

@@ -1,11 +1,26 @@
 #include "Ticket.hpp"
+#include <iostream>
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
+#include <string>
 
 Ticket::Ticket(const std::string &slotID, Vehicle parkVehicle)
     : slotID(slotID), entryTime(std::chrono::steady_clock::now())
 {
-    // Generate a unique ticket ID based on some logic
-    // For simplicity, let's assume it's based on the current time
-    ticketID = "TKT1";
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+
+    // Generate a random 5-digit number
+    int randomNumber = std::rand() % 90000 + 10000;
+
+    // Convert the random number to a string
+    std::string randomString;
+    std::stringstream ss;
+    ss << randomNumber;
+    ss >> randomString;
+
+    ticketID = "TKT_" + randomString;
     ParkVehicle = parkVehicle;
     Pay = nullptr;
     Status = TicketStatus::IDLE;
