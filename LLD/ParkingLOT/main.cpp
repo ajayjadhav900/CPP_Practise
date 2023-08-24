@@ -1,16 +1,18 @@
 #include <iostream>
-#include "ParkingManager.hpp"
+#include "ParkingAdmin.hpp"
+#include "ParkingAttendant.hpp"
 /*
-g++ -g -o parking_management ParkingSlot.cpp ParkingLot.cpp
- Payment.cpp Ticket.cpp ParkingManager.cpp vehicle.cpp main.cpp*/
+g++ -g -o parking_management ParkingSlot.cpp ParkingLot.cpp Vehicle.cpp Payment.cpp Ticket.cpp
+ParkingAdmin.cpp ParkingAttendant.cpp  main.cpp*/
 int main()
 {
-    EntryManager entryManager;
-    ExitManager exitManager;
 
-    // Example usage of the parking management system
-    entryManager.AllocateParking();
-    entryManager.GroundFloorParking.PrintParkingSlots();
+    ParkingAdmin admin;
+    admin.GenerateParking();
+    admin.GroundFloorParking.PrintParkingSlots();
+    EntryManager entryManager(admin.GroundFloorParking);
+    ExitManager exitManager(admin.GroundFloorParking);
+
     // Get a free parking slot for a bike
     if (entryManager.GroundFloorParking.currentParkSlots ==
         entryManager.GroundFloorParking.MaxCapacity)
@@ -36,11 +38,6 @@ int main()
         entryManager.UpdateTicketDetails(ticket);
     }
     entryManager.AllocateParking();
-    exitManager.GroundFloorParking.AllParkingVec =
-        entryManager.GroundFloorParking.AllParkingVec;
-
-    exitManager.GroundFloorParking.currentParkSlots =
-        entryManager.GroundFloorParking.currentParkSlots;
 
     exitManager.AllTicketsList = entryManager.AllTicketsList;
     // Perform exit operations
@@ -65,7 +62,7 @@ int main()
         exitTicket->DoThePayment(PaymentMode::ONLINEAPP, exitTicket->EstimateCost());
     }
     auto slot = exitManager.GetTheParkingSlot("B1");
-    cout << "\nCurrent Park slots are " << exitManager.GroundFloorParking.currentParkSlots<<endl;
+    cout << "\nCurrent Park slots are " << exitManager.GroundFloorParking.currentParkSlots << endl;
     slot->releaseSlot();
 
     return 0;

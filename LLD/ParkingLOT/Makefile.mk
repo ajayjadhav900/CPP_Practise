@@ -5,7 +5,7 @@ CC := g++
 CFLAGS := -std=c++11 -Wall
 
 # Source files
-SRCS := ParkingSlot.cpp ParkingManager.cpp Ticket.cpp main.cpp
+SRCS := ParkingSlot.cpp ParkingAttendant.cpp Ticket.cpp main.cpp
 
 # Object files
 OBJS := $(SRCS:.cpp=.o)
