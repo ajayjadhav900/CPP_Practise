@@ -10,6 +10,15 @@ GroundFloorParking(groundFloorParking)
 {
 }
 
+ParkingAttendant::~ParkingAttendant()
+{
+    for(auto tkt:AllTicketsList)
+    {
+        delete tkt;
+    }
+    AllTicketsList.clear();
+}
+
 ParkingSlot *ParkingAttendant::GetTheParkingSlot(std::string slotid)
 {
     for (ParkingSlot *slot : GroundFloorParking.AllParkingVec)

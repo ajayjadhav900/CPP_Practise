@@ -11,6 +11,11 @@ Ticket::Ticket(const std::string &slotID, Vehicle parkVehicle)
     Status = TicketStatus::IDLE;
 }
 
+Ticket::~Ticket()
+{
+    delete Pay;
+}
+
 std::string Ticket::getTicketID() const
 {
     return ticketID;

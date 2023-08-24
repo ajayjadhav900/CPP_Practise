@@ -3,49 +3,69 @@
 
 #include <string>
 using namespace std;
-enum class VehicleTypes { TWO_WHEELER, FOUR_WHEELER , TRUCK};
+enum class VehicleTypes
+{
+    TWO_WHEELER,
+    FOUR_WHEELER,
+    TRUCK
+};
 
-class ParkingSlot {
+class ParkingSlot
+{
 public:
     std::string slotID;
     bool isOccupied;
     int FloorNo;
 
-    ParkingSlot(const std::string& id, bool occupied, int floorNo);
-    virtual ~ParkingSlot();  // Virtual destructor to allow proper cleanup in derived classes
+    ParkingSlot(const std::string &id, bool occupied, int floorNo);
+    virtual ~ParkingSlot(); // Virtual destructor to allow proper cleanup in derived classes
 
-    virtual VehicleTypes getVehicleType() const = 0;  // Pure virtual function, to be overridden in derived classes
-    virtual void parkVehicle();  // Pure virtual function, to be overridden in derived classes
-    virtual void releaseSlot();  // Pure virtual function, to be overridden in derived classes
+    virtual VehicleTypes getVehicleType() const = 0; // Pure virtual function, to be overridden in derived classes
+    virtual void parkVehicle();                      // Pure virtual function, to be overridden in derived classes
+    virtual void releaseSlot();                      // Pure virtual function, to be overridden in derived classes
     virtual string GetSlotID() = 0;
     virtual bool IsOccupied() = 0;
+    virtual std::string GenerateSlotName(int index) const = 0;
 };
 
-class BikeParkingSlot : public ParkingSlot {
-public:
-    BikeParkingSlot(const std::string& id, bool occupied, int floorNo);
-
-    VehicleTypes getVehicleType() const override;
-    virtual string GetSlotID();
-    virtual bool IsOccupied();
-};
-
-class CarParkingSlot : public ParkingSlot {
-public:
-    CarParkingSlot(const std::string& id, bool occupied, int floorno);
-
-    VehicleTypes getVehicleType() const override;
-    virtual string GetSlotID();
-    virtual bool IsOccupied();
-};
-
-class TruckParkingSlot: public ParkingSlot
+class BikeParkingSlot : public ParkingSlot
 {
-    public:
+public:
+    BikeParkingSlot(const std::string &id, bool occupied, int floorNo);
+
+    VehicleTypes getVehicleType() const override;
+    virtual string GetSlotID();
+    virtual bool IsOccupied();
+    std::string GenerateSlotName(int index) const override
+    {
+        return "B" + std::to_string(index);
+    }
+};
+
+class CarParkingSlot : public ParkingSlot
+{
+public:
+    CarParkingSlot(const std::string &id, bool occupied, int floorno);
+    std::string GenerateSlotName(int index) const override
+    {
+        return "C" + std::to_string(index);
+    }
+
+    VehicleTypes getVehicleType() const override;
+    virtual string GetSlotID();
+    virtual bool IsOccupied();
+};
+
+class TruckParkingSlot : public ParkingSlot
+{
+public:
     TruckParkingSlot(const std::string &id, bool occupied, int floorno);
     VehicleTypes getVehicleType() const override;
     virtual string GetSlotID();
     virtual bool IsOccupied();
-
+    std::string GenerateSlotName(int index) const override
+    {
+        return "T" + std::to_string(index);
+    }
 };
 #endif

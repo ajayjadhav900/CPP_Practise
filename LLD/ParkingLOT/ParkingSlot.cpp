@@ -25,7 +25,8 @@ void ParkingSlot::parkVehicle()
 // BikeParkingSlot implementation
 
 BikeParkingSlot::BikeParkingSlot(const std::string &id, bool occupied, int floorNo)
-    : ParkingSlot(id, occupied, floorNo) {}
+    : ParkingSlot(id, occupied, floorNo) {
+    }
 
 VehicleTypes BikeParkingSlot::getVehicleType() const
 {
@@ -54,7 +55,7 @@ void ParkingSlot::releaseSlot()
         std::cout << "Slot " << slotID << " is already vacant" << std::endl;
     }
 
-    
+
 }
 
 // CarParkingSlot implementation

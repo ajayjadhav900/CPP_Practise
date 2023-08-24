@@ -15,7 +15,7 @@ enum class TicketStatus
 class Ticket {
 public:
     Ticket(const std::string& slotID, Vehicle parkVehicle);
-
+    ~Ticket();
     std::string getTicketID() const;
     std::string getSlotID() const;
     std::chrono::steady_clock::time_point getEntryTime() const;

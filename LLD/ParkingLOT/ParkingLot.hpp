@@ -7,6 +7,7 @@ public:
     ParkingLot()
     {
     }
+    ~ParkingLot();
     int MaxCapacity{10};
     int NoOfCarParkings{4};
     int NoOfBikesParking{4};

@@ -1,0 +1,891 @@
+#include <iostream>
+#include "ParkingAdmin.hpp"
+#include "ParkingAttendant.hpp"
+#include "ParkingDisplayDashboard.hpp"
+
+/*
+g++ -g -o parking_management ParkingSlot.cpp ParkingLot.cpp Vehicle.cpp Payment.cpp Ticket.cpp
+ParkingAdmin.cpp ParkingAttendant.cpp ParkingDisplayDashboard main.cpp*/
+
+int main()
+{
+
+    ParkingAdmin admin;
+    admin.GenerateParking();
+    admin.GroundFloorParking.PrintParkingSlots();
+    ParkingDisplayDashboard Dashboard(admin.GroundFloorParking);
+    Dashboard.DisplaySlots(false);
+
+    EntryManager entryManager(admin.GroundFloorParking);
+    ExitManager exitManager(admin.GroundFloorParking);
+
+    if (!Dashboard.GenerateParkingFullMessege())
+    {
+        return 0;
+    }
+    ParkingSlot *bikeSlot = entryManager.GetFreeParkingSlot(VehicleTypes::TWO_WHEELER);
+
+    // Create a ticket for the bike
+    Car bk("MH14 GN8617", VehicleTypes::FOUR_WHEELER);
+    Vehicle &veh = bk;
+    entryManager.CreateTicket(bikeSlot, veh);
+
+    Dashboard.DisplaySlots(true);
+
+    // Get the ticket details
+    std::string ticketID = "TKT1"; // Assuming a valid ticket ID
+    Ticket *ticket = entryManager.GetTicketDetails(ticketID);
+    std::cout << "Ticket Status: " << static_cast<int>(ticket->GetStatus()) << std::endl;
+    if (ticket != nullptr)
+    {
+        // Perform operations with the ticket
+        // For example, set the exit time and update the ticket details
+        ticket->setExitTime();
+        entryManager.UpdateTicketDetails(ticket);
+    }
+    entryManager.AllocateParking();
+
+    exitManager.AllTicketsList = entryManager.AllTicketsList;
+    // Perform exit operations
+    // Get the ticket details at the exit
+    Ticket *exitTicket = exitManager.GetTicketDetails(ticketID);
+    if (exitTicket != nullptr)
+    {
+        // Perform operations with the ticket at the exit
+        // For example, calculate the parking duration and print the details
+        std::chrono::steady_clock::duration duration = exitTicket->getExitTime() - exitTicket->getEntryTime();
+        long long parkingDuration = std::chrono::duration_cast<std::chrono::minutes>(duration).count();
+
+        std::cout << "Ticket ID: " << exitTicket->getTicketID() << std::endl;
+        std::cout << "Ticket Status: " << static_cast<int>(ticket->GetStatus()) << std::endl;
+        std::cout << "Slot ID: " << exitTicket->getSlotID() << std::endl;
+        std::cout << "Vehile Reg no: " << exitTicket->GetVehicleData().RegNo.c_str();
+        VehicleTypes type = exitTicket->GetVehicleData().Type;
+        std::cout << " Vehicle Type: " << static_cast<int>(type) << std::endl;
+        std::cout << "Parking duration: " << parkingDuration << " minutes" << std::endl;
+        std::cout << "Cost of ticket: " << exitTicket->EstimateCost() << " rupees" << std::endl;
+        std::cout << "Payment: " << std::endl;
+        exitTicket->DoThePayment(PaymentMode::ONLINEAPP, exitTicket->EstimateCost());
+    }
+    auto slot = exitManager.GetTheParkingSlot("B1");
+    cout << "\nCurrent Park slots are " << exitManager.GroundFloorParking.currentParkSlots << endl;
+    slot->releaseSlot();
+
+    return 0;
+}
+ 
+#include "ParkingAdmin.hpp"
+
+ParkingAdmin::ParkingAdmin()
+{
+}
+
+void ParkingAdmin::GenerateParking()
+{
+    GroundFloorParking.GenerateParking();
+
+}
+ 
+#include "ParkingAttendant.hpp"
+#include "ParkingLot.hpp"
+#include <iostream>
+using namespace std;
+// ParkingAttendant implementation
+
+
+ParkingAttendant::ParkingAttendant(GroundFloor &groundFloorParking):
+GroundFloorParking(groundFloorParking)
+{
+}
+
+ParkingAttendant::~ParkingAttendant()
+{
+    for(auto tkt:AllTicketsList)
+    {
+        delete tkt;
+    }
+    AllTicketsList.clear();
+}
+
+ParkingSlot *ParkingAttendant::GetTheParkingSlot(std::string slotid)
+{
+    for (ParkingSlot *slot : GroundFloorParking.AllParkingVec)
+    {
+        if (slot->slotID == slotid)
+        {
+            return slot;
+        }
+    }
+    return nullptr;
+}
+
+// EntryManager implementation
+
+EntryManager::EntryManager(GroundFloor& groundFloorParking):ParkingAttendant(groundFloorParking)
+{
+}
+
+ParkingSlot *EntryManager::GetFreeParkingSlot(VehicleTypes type)
+{
+    for (ParkingSlot *slot : GroundFloorParking.AllParkingVec)
+    {
+        if (!slot->isOccupied && slot->getVehicleType() == type)
+        {
+            slot->isOccupied= true;
+            GroundFloorParking.currentParkSlots++;
+            return slot;
+        }
+    }
+    return nullptr;
+}
+
+void EntryManager::CreateTicket(ParkingSlot *parkSlot, const Vehicle &vehicle)
+{
+    if (parkSlot != nullptr)
+    {
+        Ticket *ticket = new Ticket(parkSlot->slotID, vehicle);
+        AllTicketsList.push_back(ticket);
+        parkSlot->parkVehicle();
+        std::cout << "Ticket created for slot " << parkSlot->slotID << std::endl;
+        std::cout << "Ticket ID: " << ticket->getTicketID() << std::endl;
+    }
+    else
+    {
+        std::cout << "No free parking slot available for the given vehicle type." << std::endl;
+    }
+}
+
+void EntryManager::AllocateParking()
+{
+    // Implement the logic for allocating parking slots for incoming vehicles
+    // You can use GetFreeParkingSlot() and CreateTicket() functions to allocate a slot and create a ticket, respectively.
+}
+
+Ticket *EntryManager::GetTicketDetails(const std::string &id)
+{
+    for (Ticket *ticket : AllTicketsList)
+    {
+        if (ticket->getTicketID() == id)
+        {
+            ticket->SetStatus('A');
+            return ticket;
+        }
+    }
+    return nullptr;
+}
+
+void EntryManager::UpdateTicketDetails(Ticket *ticket)
+{
+    // Implement the logic for updating ticket details
+    // You can modify the necessary attributes of the ticket object based on specific requirements.
+}
+
+ParkingSlot *EntryManager::GetTheParkingSlot(std::string slotid)
+{
+    for (ParkingSlot *slot : GroundFloorParking.AllParkingVec)
+    {
+        if (slot->slotID == slotid)
+        {
+            return slot;
+        }
+    }
+    return nullptr;
+}
+
+// ExitManager implementation
+
+ExitManager::ExitManager(GroundFloor& groundFloorParking):ParkingAttendant(groundFloorParking)
+{
+}
+
+
+Ticket *ExitManager::GetTicketDetails(const std::string &id)
+{
+    for (Ticket *ticket : AllTicketsList)
+    {
+        if (ticket->getTicketID() == id)
+        {
+            ticket->SetStatus('P');
+            return ticket;
+        }
+    }
+    return nullptr;
+}
+
+void ExitManager::UpdateTicketDetails(Ticket *ticket)
+{
+    // Implement the logic for updating ticket details
+    // You can modify the necessary attributes of the ticket object based on specific requirements.
+}
+
+void ExitManager::AllocateParking()
+{
+    // Implement the logic for freeing up parking slots and updating ticket details when vehicles exit the parking
+}
+
+void ExitManager::CreateTicket(ParkingSlot *parkSlot, const Vehicle &vehicle)
+{
+    if (parkSlot != nullptr)
+    {
+        parkSlot->releaseSlot();
+        std::cout << "Ticket closed for slot " << parkSlot->slotID << std::endl;
+    }
+    else
+    {
+        std::cout << "Invalid parking slot." << std::endl;
+    }
+}
+
+ParkingSlot *ExitManager::GetFreeParkingSlot(VehicleTypes type)
+{
+    // The ExitManager does not need to find free parking slots
+    // Return nullptr as there are no slots to allocate
+    return nullptr;
+}
+
+ParkingSlot *ExitManager::GetTheParkingSlot(std::string slotid)
+{
+    for (ParkingSlot *slot : GroundFloorParking.AllParkingVec)
+    {
+        if (slot->slotID == slotid)
+        {
+            return slot;
+        }
+    }
+    return nullptr;
+}
+ 
+#include "ParkingDisplayDashboard.hpp"
+#include "Vehicle.hpp"
+#include <iostream>
+#include <iomanip> // For setw
+#include "ParkingLot.hpp"
+using namespace std;
+ParkingDisplayDashboard::ParkingDisplayDashboard(const ParkingLot &lots) : Lots(lots)
+{
+}
+
+void ParkingDisplayDashboard::DisplaySlots(bool type)
+{
+    cout << " Parking Slots:" << endl;
+    cout << setw(10) << "Slot ID" << setw(10) << "Occupied" << endl;
+    cout << "\nBike Parking Slots:" << endl;
+
+    for (auto bike : Lots.AllParkingVec)
+    {
+        if (bike->getVehicleType() == VehicleTypes::TWO_WHEELER &&
+            bike->isOccupied == type)
+            cout << setw(10) << bike->GetSlotID() << setw(10) << (bike->IsOccupied() ? "Yes" : "No") << setw(10) << endl;
+    }
+
+    cout << "\nCar Parking Slots:" << endl;
+    cout << setw(10) << "Slot ID" << setw(10) << "Occupied" << setw(10) << endl;
+    for (auto &car : Lots.AllParkingVec)
+    {
+        if (car->getVehicleType() == VehicleTypes::FOUR_WHEELER &&
+            car->isOccupied == type)
+            cout << setw(10) << car->GetSlotID() << setw(10) << (car->IsOccupied() ? "Yes" : "No") << endl;
+    }
+
+    cout << "\nTruck Parking Slots:" << endl;
+    cout << setw(10) << "Slot ID" << setw(10) << "Occupied" << setw(10) << endl;
+    for (auto &truck : Lots.AllParkingVec)
+    {
+        if (truck->getVehicleType() == VehicleTypes::TRUCK &&
+            truck->isOccupied == type)
+            cout << setw(10) << truck->GetSlotID() << setw(10) << (truck->IsOccupied() ? "Yes" : "No") << endl;
+    }
+}
+
+bool ParkingDisplayDashboard::GenerateParkingFullMessege()
+{
+    if (Lots.currentParkSlots == Lots.MaxCapacity)
+    {
+        cout << "\nParking floor is Full!!!\n";
+        return true;
+    }
+    return false;
+}
+ 
+#include <iostream>
+#include <iomanip> // For setw
+
+#include "ParkingLot.hpp"
+
+void GroundFloor::GenerateParking()
+{
+    for (int i = 1; i <= NoOfBikesParking; ++i)
+    {
+        AllParkingVec.push_back(new BikeParkingSlot("B" + to_string(i), false, 0));
+    }
+
+    for (int i = 1; i <= NoOfCarParkings; ++i)
+    {
+        AllParkingVec.push_back(new CarParkingSlot("C" + to_string(i), false, 0));
+    }
+
+    for (int i = 1; i <= NoOfTrucksParking; ++i)
+    {
+        AllParkingVec.push_back(new TruckParkingSlot("T" + to_string(i), false, 0));
+    }
+}
+
+// Print all parkings in tabular format
+void GroundFloor::PrintParkingSlots()
+{
+    cout << " Parking Slots:" << endl;
+    cout << setw(10) << "Slot ID" << setw(10) << "Occupied" << endl;
+    for (auto bike : AllParkingVec)
+    {
+        if (bike->getVehicleType() == VehicleTypes::TWO_WHEELER)
+            cout << setw(10) << bike->GetSlotID() << setw(10) << (bike->IsOccupied() ? "Yes" : "No") << setw(10) << endl;
+    }
+
+    cout << "\nCar Parking Slots:" << endl;
+    cout << setw(10) << "Slot ID" << setw(10) << "Occupied" << setw(10) << endl;
+    for (auto &car : AllParkingVec)
+    {
+        if (car->getVehicleType() == VehicleTypes::FOUR_WHEELER)
+            cout << setw(10) << car->GetSlotID() << setw(10) << (car->IsOccupied() ? "Yes" : "No") << endl;
+    }
+
+    cout << "\nTruck Parking Slots:" << endl;
+    cout << setw(10) << "Slot ID" << setw(10) << "Occupied" << setw(10) << endl;
+    for (auto &truck : AllParkingVec)
+    {
+        if (truck->getVehicleType() == VehicleTypes::TRUCK)
+            cout << setw(10) << truck->GetSlotID() << setw(10) << (truck->IsOccupied() ? "Yes" : "No") << endl;
+    }
+}
+
+ParkingLot::~ParkingLot()
+{
+    for (auto allslots : AllParkingVec)
+    {
+        delete allslots;
+    }
+    AllParkingVec.clear();
+}
+ 
+#include "ParkingSlot.hpp"
+#include <iostream>
+#include <string>
+using namespace std;
+// ParkingSlot implementation
+
+ParkingSlot::ParkingSlot(const std::string &id, bool occupied, int floorNo)
+    : slotID(id), isOccupied(occupied), FloorNo(floorNo) {}
+
+ParkingSlot::~ParkingSlot() {}
+
+void ParkingSlot::parkVehicle()
+{
+    if (!isOccupied)
+    {
+        isOccupied = true;
+        std::cout << "Vehicle with type parked in slot " << static_cast<int>(getVehicleType()) << slotID << std::endl;
+    }
+    else
+    {
+        std::cout << "Slot " << slotID << " is already occupied" << std::endl;
+    }
+}
+
+// BikeParkingSlot implementation
+
+BikeParkingSlot::BikeParkingSlot(const std::string &id, bool occupied, int floorNo)
+    : ParkingSlot(id, occupied, floorNo) {}
+
+VehicleTypes BikeParkingSlot::getVehicleType() const
+{
+    return VehicleTypes::TWO_WHEELER;
+}
+
+string BikeParkingSlot::GetSlotID()
+{
+    return slotID;
+}
+
+bool BikeParkingSlot::IsOccupied()
+{
+    return isOccupied;
+}
+
+void ParkingSlot::releaseSlot()
+{
+    if (isOccupied)
+    {
+        isOccupied = false;
+        std::cout << "Vehicle released from slot " << slotID << std::endl;
+    }
+    else
+    {
+        std::cout << "Slot " << slotID << " is already vacant" << std::endl;
+    }
+
+    
+}
+
+// CarParkingSlot implementation
+
+CarParkingSlot::CarParkingSlot(const std::string &id, bool occupied, int floorNo)
+    : ParkingSlot(id, occupied, FloorNo) {}
+
+VehicleTypes CarParkingSlot::getVehicleType() const
+{
+    return VehicleTypes::FOUR_WHEELER;
+}
+
+string CarParkingSlot::GetSlotID()
+{
+    return slotID;
+}
+
+bool CarParkingSlot::IsOccupied()
+{
+    return isOccupied;
+}
+
+TruckParkingSlot::TruckParkingSlot(const std::string &id, bool occupied, int floorNo)
+    : ParkingSlot(id, occupied, floorNo)
+{
+}
+
+VehicleTypes TruckParkingSlot::getVehicleType() const
+{
+    return VehicleTypes::TRUCK;
+}
+
+string TruckParkingSlot::GetSlotID()
+{
+    return slotID;
+}
+
+bool TruckParkingSlot::IsOccupied()
+{
+    return isOccupied;
+}
+ 
+#include "Payment.hpp"
+
+#include<iostream>
+
+void OnlineApp::PayingTheFee(int fee)
+{
+    std::cout<<"Paying the fee via APP!"<<fee<<std::endl;
+}
+
+void Cash::PayingTheFee(int fee)
+{
+    std::cout<<"Paying the fee via cash!"<<fee<<std::endl;
+}
+
+void Card::PayingTheFee(int fee)
+{
+     std::cout<<"Paying the fee via card!"<<fee<<std::endl;
+}
+ 
+#include "Ticket.hpp"
+
+Ticket::Ticket(const std::string &slotID, Vehicle parkVehicle)
+    : slotID(slotID), entryTime(std::chrono::steady_clock::now())
+{
+    // Generate a unique ticket ID based on some logic
+    // For simplicity, let's assume it's based on the current time
+    ticketID = "TKT1";
+    ParkVehicle = parkVehicle;
+    Pay = nullptr;
+    Status = TicketStatus::IDLE;
+}
+
+Ticket::~Ticket()
+{
+    delete Pay;
+}
+
+std::string Ticket::getTicketID() const
+{
+    return ticketID;
+}
+
+std::string Ticket::getSlotID() const
+{
+    return slotID;
+}
+
+std::chrono::steady_clock::time_point Ticket::getEntryTime() const
+{
+    return entryTime;
+}
+
+std::chrono::steady_clock::time_point Ticket::getExitTime() const
+{
+    return exitTime;
+}
+
+double Ticket::getExitTimeinSecs() const
+{
+    return exitTimeInSeconds;
+}
+
+Vehicle &Ticket::GetVehicleData()
+{
+    return ParkVehicle;
+}
+
+void Ticket::setExitTime()
+{
+    exitTime = std::chrono::steady_clock::now();
+    // Calculate the exit time in seconds
+    std::chrono::duration<double> elapsedTime = exitTime - std::chrono::steady_clock::time_point();
+    exitTimeInSeconds = elapsedTime.count();
+
+    // Add 10 minutes to the entry time
+    std::chrono::minutes durationToAdd(10);
+    exitTime += durationToAdd;
+}
+
+int Ticket::EstimateCost()
+{
+    if (ParkVehicle.Type == VehicleTypes::TWO_WHEELER)
+    {
+        cost = 20;
+    }
+    else if (ParkVehicle.Type == VehicleTypes::FOUR_WHEELER)
+    {
+        cost = 40;
+    }
+    return cost;
+}
+
+void Ticket::DoThePayment(PaymentMode mode, int amt)
+{
+    if (mode == PaymentMode::CASH)
+    {
+        Pay = new Cash();
+        Pay->PayingTheFee(amt);
+    }
+    else if (mode == PaymentMode::ONLINEAPP)
+    {
+        Pay = new OnlineApp();
+        Pay->PayingTheFee(amt);
+    }
+    else if (mode == PaymentMode::CARD)
+    {
+        Pay = new Card();
+        Pay->PayingTheFee(amt);
+    }
+    else
+    {
+        Pay = nullptr;
+    }
+}
+
+void Ticket::SetStatus(char choice)
+{
+    if (choice == 'A')
+        Status = TicketStatus::ACTIVE;
+    else if (choice == 'P')
+        Status = TicketStatus::PAID;
+}
+
+TicketStatus Ticket::GetStatus()
+{
+    return Status;
+}
+ 
+#include "Vehicle.hpp"
+
+Bike::Bike(std::string regNO, VehicleTypes type)
+{
+    RegNo = regNO;
+    Type = type;
+}
+Car::Car(std::string regNO, VehicleTypes type)
+{
+    RegNo = regNO;
+    Type = type;
+}
+/*
+void Vehicle::SetVehicle(std::string regno, VehicleTypes type)
+{
+    RegNo = regno;
+    Type = type;
+}
+*/ 
+ 
+#include"ParkingLot.hpp"
+
+class ParkingAdmin
+{
+public:
+
+    GroundFloor GroundFloorParking;
+    ParkingAdmin();
+    void GenerateParking();
+}; 
+#ifndef PARKINGMANAGER_HPP
+#define PARKINGMANAGER_HPP
+
+#include <vector>
+#include <string>
+#include "Ticket.hpp"
+class GroundFloor;
+class ParkingAttendant
+{
+public:
+    std::vector<Ticket *> AllTicketsList;
+    GroundFloor &GroundFloorParking;
+    ParkingAttendant(GroundFloor &groundFloorParking);
+    ~ParkingAttendant();
+
+    virtual ParkingSlot *GetFreeParkingSlot(VehicleTypes type) = 0;
+    virtual ParkingSlot *GetTheParkingSlot(std::string slotid);
+    virtual void CreateTicket(ParkingSlot *parkSlot, const Vehicle &vehicle) = 0;
+    virtual Ticket *GetTicketDetails(const std::string &id) = 0;
+    virtual void UpdateTicketDetails(Ticket *ticket) = 0;
+    virtual void AllocateParking() = 0;
+
+};
+
+
+class EntryManager : public ParkingAttendant
+{
+public:
+    EntryManager(GroundFloor &groundFloorParking);
+    ParkingSlot *GetFreeParkingSlot(VehicleTypes type) override;
+    void CreateTicket(ParkingSlot *parkSlot, const Vehicle &vehicle) override;
+
+    Ticket *GetTicketDetails(const std::string &id) override;
+    void UpdateTicketDetails(Ticket *ticket) override;
+    virtual ParkingSlot *GetTheParkingSlot(std::string slotid) override;
+    void AllocateParking() override;
+};
+
+class ExitManager : public ParkingAttendant
+{
+public:
+    ExitManager(GroundFloor &groundFloorParking);
+    Ticket *GetTicketDetails(const std::string &id) override;
+    void UpdateTicketDetails(Ticket *ticket) override;
+    void AllocateParking() override;
+    void CreateTicket(ParkingSlot *parkSlot, const Vehicle &vehicle) override;
+    ParkingSlot *GetFreeParkingSlot(VehicleTypes type) override;
+    virtual ParkingSlot *GetTheParkingSlot(std::string slotid) override;
+};
+
+#endif
+ 
+
+class ParkingLot;
+class ParkingDisplayDashboard
+{
+    const ParkingLot &Lots;
+    public:
+    ParkingDisplayDashboard(const ParkingLot &Lots);
+    void DisplaySlots(bool type);
+    bool GenerateParkingFullMessege();
+}; 
+#include "ParkingSlot.hpp"
+#include <list>
+using namespace std;
+class ParkingLot
+{
+public:
+    ParkingLot()
+    {
+    }
+    ~ParkingLot();
+    int MaxCapacity{10};
+    int NoOfCarParkings{4};
+    int NoOfBikesParking{4};
+    int NoOfTrucksParking{2};
+    int FloorNo{0};
+    int currentParkSlots{0};
+    list<ParkingSlot *> AllParkingVec;
+
+    ParkingLot(int maxCapacity,
+               int noOfCarParkings,
+               int noOfBikesParking,
+               int noOfTrucksParking,
+               int floorNo) : MaxCapacity(maxCapacity),
+                              NoOfCarParkings(noOfCarParkings),
+                              NoOfBikesParking(noOfBikesParking),
+                              NoOfTrucksParking(noOfTrucksParking),
+                              FloorNo(floorNo)
+    {
+    }
+};
+
+class GroundFloor : public ParkingLot
+{
+public:
+    GroundFloor()
+    {
+    }
+    GroundFloor(int maxCapacity,
+                int noOfCarParkings,
+                int noOfBikesParking,
+                int noOfTrucksParking,
+                int floorNo) : ParkingLot(maxCapacity,
+                                          noOfCarParkings,
+                                          noOfBikesParking,
+                                          noOfTrucksParking,
+                                          floorNo)
+    {
+    }
+
+    // Generate Lists Bikes = 50 , Cars = 40  and Trucks  = 10 list
+    void GenerateParking();
+    void PrintParkingSlots();
+}; 
+#ifndef PARKINGSLOT_HPP
+#define PARKINGSLOT_HPP
+
+#include <string>
+using namespace std;
+enum class VehicleTypes { TWO_WHEELER, FOUR_WHEELER , TRUCK};
+
+class ParkingSlot {
+public:
+    std::string slotID;
+    bool isOccupied;
+    int FloorNo;
+
+    ParkingSlot(const std::string& id, bool occupied, int floorNo);
+    virtual ~ParkingSlot();  // Virtual destructor to allow proper cleanup in derived classes
+
+    virtual VehicleTypes getVehicleType() const = 0;  // Pure virtual function, to be overridden in derived classes
+    virtual void parkVehicle();  // Pure virtual function, to be overridden in derived classes
+    virtual void releaseSlot();  // Pure virtual function, to be overridden in derived classes
+    virtual string GetSlotID() = 0;
+    virtual bool IsOccupied() = 0;
+};
+
+class BikeParkingSlot : public ParkingSlot {
+public:
+    BikeParkingSlot(const std::string& id, bool occupied, int floorNo);
+
+    VehicleTypes getVehicleType() const override;
+    virtual string GetSlotID();
+    virtual bool IsOccupied();
+};
+
+class CarParkingSlot : public ParkingSlot {
+public:
+    CarParkingSlot(const std::string& id, bool occupied, int floorno);
+
+    VehicleTypes getVehicleType() const override;
+    virtual string GetSlotID();
+    virtual bool IsOccupied();
+};
+
+class TruckParkingSlot: public ParkingSlot
+{
+    public:
+    TruckParkingSlot(const std::string &id, bool occupied, int floorno);
+    VehicleTypes getVehicleType() const override;
+    virtual string GetSlotID();
+    virtual bool IsOccupied();
+
+};
+#endif
+ 
+
+enum class PaymentMode
+{
+    CASH,
+    ONLINEAPP,
+    CARD
+};
+class IPayment
+{
+
+    public:
+    void virtual PayingTheFee(int) = 0; 
+};
+
+class OnlineApp :public IPayment
+{
+    public:
+    void PayingTheFee(int fee);
+};
+
+class Cash :public IPayment
+{
+    public:
+    void PayingTheFee(int fee);
+};
+
+class Card :public IPayment
+{
+    public:
+    void PayingTheFee(int fee); 
+};
+
+
+ 
+#ifndef TICKET_HPP
+#define TICKET_HPP
+
+
+#include <string>
+#include <chrono>
+#include "Vehicle.hpp"
+#include "Payment.hpp"
+enum class TicketStatus
+{
+    IDLE,
+    ACTIVE,
+    PAID
+};
+class Ticket {
+public:
+    Ticket(const std::string& slotID, Vehicle parkVehicle);
+    ~Ticket();
+    std::string getTicketID() const;
+    std::string getSlotID() const;
+    std::chrono::steady_clock::time_point getEntryTime() const;
+    std::chrono::steady_clock::time_point getExitTime() const;
+    double getExitTimeinSecs () const;
+    Vehicle & GetVehicleData();
+    void setExitTime();
+    int EstimateCost();
+    void DoThePayment(PaymentMode mode, int amt);
+    void SetStatus(char ch);
+    TicketStatus GetStatus();
+private:
+    std::string ticketID;
+    std::string slotID;
+    std::chrono::steady_clock::time_point entryTime;
+    std::chrono::steady_clock::time_point exitTime;
+    double exitTimeInSeconds;
+    Vehicle ParkVehicle;
+    int cost;
+    TicketStatus Status;
+    IPayment *Pay;
+
+};
+
+#endif
+ 
+#include <string>
+#include "ParkingSlot.hpp"
+
+class Vehicle
+{
+public:
+    std::string RegNo;
+    VehicleTypes Type;
+    //void SetVehicle(std::string regno, VehicleTypes type);
+};
+class Bike : public Vehicle
+{
+public:
+    Bike(std::string regNO, VehicleTypes type);
+};
+class Car : public Vehicle
+{
+public:
+    Car(std::string regNO, VehicleTypes type);
+}; 
