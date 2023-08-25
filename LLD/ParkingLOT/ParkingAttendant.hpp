@@ -5,7 +5,8 @@
 #include <string>
 #include <memory>
 #include "Ticket.hpp"
-class ParkingDisplayDashboard;
+#include "ParkingDisplayDashboard.hpp"
+
 class GroundFloor;
 class ParkingAttendant
 {
@@ -21,6 +22,8 @@ public:
     virtual Ticket *GetTicketDetails(const std::string &id) = 0;
     virtual void UpdateTicketDetails(Ticket *ticket) = 0;
     virtual void AllocateParking() = 0;
+        virtual void StartWorking() = 0;
+
 };
 
 class EntryManager : public ParkingAttendant
@@ -36,7 +39,7 @@ public:
     virtual std::shared_ptr<ParkingSlot> GetTheParkingSlot(std::string slotid) override;
     void AllocateParking() override;
 
-    void StartWorking();
+    virtual void StartWorking();
 };
 
 class ExitManager : public ParkingAttendant
@@ -49,7 +52,7 @@ public:
     void CreateTicket(std::shared_ptr<ParkingSlot> parkSlot, const Vehicle &vehicle) override;
     std::shared_ptr<ParkingSlot> GetFreeParkingSlot(VehicleTypes type) override;
     virtual std::shared_ptr<ParkingSlot> GetTheParkingSlot(std::string slotid) override;
-    void StartWorking();
+    virtual void StartWorking();
     void printSeparator();
 };
 

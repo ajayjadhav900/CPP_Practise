@@ -1,6 +1,4 @@
 #include "ParkingAttendant.hpp"
-#include "ParkingLot.hpp"
-#include "ParkingDisplayDashboard.hpp"
 #include <iostream>
 #include <iomanip>
 
@@ -57,8 +55,6 @@ void EntryManager::CreateTicket(std::shared_ptr< ParkingSlot >parkSlot, const Ve
         parkSlot->parkVehicle();
         std::cout << "Ticket created for slot " << parkSlot->slotID << std::endl;
         std::cout << "Ticket ID created : " << ticket->getTicketID() << std::endl;
-
-        delete ticket;
     }
     else
     {

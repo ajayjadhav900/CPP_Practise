@@ -1,7 +1,7 @@
 @echo off
-type NUL > combined.txt
+type NUL > combined1.txt
 
 for %%f in (*.cpp *.hpp) do (
-    type "%%f" >> combined.txt
-    echo. >> combined.txt
+    type "%%~nf.%%~xf" >> combined1.txt
+    echo. >> combined1.txt
 )

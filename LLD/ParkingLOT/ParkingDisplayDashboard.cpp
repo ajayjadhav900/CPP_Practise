@@ -2,9 +2,13 @@
 #include "Vehicle.hpp"
 #include <iostream>
 #include <iomanip> // For setw
-#include "ParkingLot.hpp"
 using namespace std;
+
 ParkingDisplayDashboard::ParkingDisplayDashboard(const ParkingLot &lots) : Lots(lots)
+{
+}
+
+ParkingDisplayDashboard::ParkingDisplayDashboard()
 {
 }
 
