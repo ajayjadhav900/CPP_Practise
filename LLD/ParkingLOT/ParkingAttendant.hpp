@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 #include "Ticket.hpp"
 class ParkingDisplayDashboard;
 class GroundFloor;
@@ -14,27 +15,25 @@ public:
     ParkingAttendant(GroundFloor &groundFloorParking);
     ~ParkingAttendant();
 
-    virtual ParkingSlot *GetFreeParkingSlot(VehicleTypes type) = 0;
-    virtual ParkingSlot *GetTheParkingSlot(std::string slotid);
-    virtual void CreateTicket(ParkingSlot *parkSlot, const Vehicle &vehicle) = 0;
+    virtual std::shared_ptr<ParkingSlot> GetFreeParkingSlot(VehicleTypes type) = 0;
+    virtual std::shared_ptr<ParkingSlot> GetTheParkingSlot(std::string slotid);
+    virtual void CreateTicket(std::shared_ptr<ParkingSlot> parkSlot, const Vehicle &vehicle) = 0;
     virtual Ticket *GetTicketDetails(const std::string &id) = 0;
     virtual void UpdateTicketDetails(Ticket *ticket) = 0;
     virtual void AllocateParking() = 0;
-
 };
-
 
 class EntryManager : public ParkingAttendant
 {
 public:
     ParkingDisplayDashboard &Dashboard;
-    EntryManager(GroundFloor &groundFloorParking, ParkingDisplayDashboard & Dashboard);
-    ParkingSlot *GetFreeParkingSlot(VehicleTypes type) override;
-    void CreateTicket(ParkingSlot *parkSlot, const Vehicle &vehicle) override;
+    EntryManager(GroundFloor &groundFloorParking, ParkingDisplayDashboard &Dashboard);
+    virtual std::shared_ptr<ParkingSlot> GetFreeParkingSlot(VehicleTypes type) override;
+    void CreateTicket(std::shared_ptr<ParkingSlot> parkSlot, const Vehicle &vehicle) override;
 
     Ticket *GetTicketDetails(const std::string &id) override;
     void UpdateTicketDetails(Ticket *ticket) override;
-    virtual ParkingSlot *GetTheParkingSlot(std::string slotid) override;
+    virtual std::shared_ptr<ParkingSlot> GetTheParkingSlot(std::string slotid) override;
     void AllocateParking() override;
 
     void StartWorking();
@@ -47,9 +46,9 @@ public:
     Ticket *GetTicketDetails(const std::string &id) override;
     void UpdateTicketDetails(Ticket *ticket) override;
     void AllocateParking() override;
-    void CreateTicket(ParkingSlot *parkSlot, const Vehicle &vehicle) override;
-    ParkingSlot *GetFreeParkingSlot(VehicleTypes type) override;
-    virtual ParkingSlot *GetTheParkingSlot(std::string slotid) override;
+    void CreateTicket(std::shared_ptr<ParkingSlot> parkSlot, const Vehicle &vehicle) override;
+    std::shared_ptr<ParkingSlot> GetFreeParkingSlot(VehicleTypes type) override;
+    virtual std::shared_ptr<ParkingSlot> GetTheParkingSlot(std::string slotid) override;
     void StartWorking();
     void printSeparator();
 };

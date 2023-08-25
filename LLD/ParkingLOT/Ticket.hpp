@@ -1,32 +1,34 @@
 #ifndef TICKET_HPP
 #define TICKET_HPP
 
-
 #include <string>
 #include <chrono>
 #include "Vehicle.hpp"
 #include "Payment.hpp"
+#include <memory>
 enum class TicketStatus
 {
     IDLE,
     ACTIVE,
     PAID
 };
-class Ticket {
+class Ticket
+{
 public:
-    Ticket(const std::string& slotID, Vehicle parkVehicle);
+    Ticket(const std::string &slotID, Vehicle parkVehicle);
     ~Ticket();
     std::string getTicketID() const;
     std::string getSlotID() const;
     std::chrono::steady_clock::time_point getEntryTime() const;
     std::chrono::steady_clock::time_point getExitTime() const;
-    double getExitTimeinSecs () const;
-    Vehicle & GetVehicleData();
+    double getExitTimeinSecs() const;
+    Vehicle &GetVehicleData();
     void setExitTime();
     int EstimateCost();
     void DoThePayment(PaymentMode mode, int amt);
     void SetStatus(char ch);
     TicketStatus GetStatus();
+
 private:
     std::string ticketID;
     std::string slotID;
@@ -36,8 +38,7 @@ private:
     Vehicle ParkVehicle;
     int cost;
     TicketStatus Status;
-    IPayment *Pay;
-
+    std::unique_ptr<IPayment> Pay;
 };
 
 #endif

@@ -22,13 +22,11 @@ Ticket::Ticket(const std::string &slotID, Vehicle parkVehicle)
 
     ticketID = "TKT_" + randomString;
     ParkVehicle = parkVehicle;
-    Pay = nullptr;
     Status = TicketStatus::IDLE;
 }
 
 Ticket::~Ticket()
 {
-    delete Pay;
 }
 
 std::string Ticket::getTicketID() const
@@ -90,23 +88,22 @@ void Ticket::DoThePayment(PaymentMode mode, int amt)
 {
     if (mode == PaymentMode::CASH)
     {
-        Pay = new Cash();
-        Pay->PayingTheFee(amt);
+        Pay = std::make_unique<Cash>();
     }
     else if (mode == PaymentMode::ONLINEAPP)
     {
-        Pay = new OnlineApp();
-        Pay->PayingTheFee(amt);
+        Pay = std::make_unique<OnlineApp>();
     }
     else if (mode == PaymentMode::CARD)
     {
-        Pay = new Card();
-        Pay->PayingTheFee(amt);
+        Pay = std::make_unique<Card>();
     }
     else
     {
         Pay = nullptr;
     }
+    if (Pay != nullptr)
+        Pay->PayingTheFee(amt);
 }
 
 void Ticket::SetStatus(char choice)

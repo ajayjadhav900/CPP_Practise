@@ -51,9 +51,5 @@ void GroundFloor::PrintParkingSlots()
 
 ParkingLot::~ParkingLot()
 {
-    for (auto allslots : AllParkingVec)
-    {
-        delete allslots;
-    }
     AllParkingVec.clear();
 }

@@ -1,5 +1,6 @@
 #include "ParkingSlot.hpp"
 #include <list>
+#include <memory>
 using namespace std;
 class ParkingLot
 {
@@ -14,7 +15,7 @@ public:
     int NoOfTrucksParking{2};
     int FloorNo{0};
     int currentParkSlots{0};
-    list<ParkingSlot *> AllParkingVec;
+    list<std::shared_ptr<ParkingSlot>> AllParkingVec;
 
     ParkingLot(int maxCapacity,
                int noOfCarParkings,
