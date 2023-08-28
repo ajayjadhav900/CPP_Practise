@@ -11,9 +11,12 @@ class GroundFloor;
 class ParkingAttendant
 {
 public:
-    std::vector<Ticket *> AllTicketsList;
     GroundFloor &GroundFloorParking;
-    ParkingAttendant(GroundFloor &groundFloorParking);
+        std::vector<Ticket *>& AllTicketList;
+
+    ParkingAttendant(GroundFloor &groundFloorParking,
+         std::vector<Ticket *>& allTicketList);
+
     ~ParkingAttendant();
 
     virtual std::shared_ptr<ParkingSlot> GetFreeParkingSlot(VehicleTypes type) = 0;
@@ -30,7 +33,10 @@ class EntryManager : public ParkingAttendant
 {
 public:
     ParkingDisplayDashboard &Dashboard;
-    EntryManager(GroundFloor &groundFloorParking, ParkingDisplayDashboard &Dashboard);
+    std::vector<Ticket *>& AllTicketsList1;
+
+    EntryManager(GroundFloor &groundFloorParking, ParkingDisplayDashboard &Dashboard,
+     std::vector<Ticket *>& allTicketList);
     virtual std::shared_ptr<ParkingSlot> GetFreeParkingSlot(VehicleTypes type) override;
     void CreateTicket(std::shared_ptr<ParkingSlot> parkSlot, const Vehicle &vehicle) override;
 
@@ -45,7 +51,9 @@ public:
 class ExitManager : public ParkingAttendant
 {
 public:
-    ExitManager(GroundFloor &groundFloorParking);
+    std::vector<Ticket *>& AllTicketsList1;
+
+    ExitManager(GroundFloor &groundFloorParking,std::vector<Ticket *>& allTicketList);
     Ticket *GetTicketDetails(const std::string &id) override;
     void UpdateTicketDetails(Ticket *ticket) override;
     void AllocateParking() override;

@@ -19,8 +19,8 @@ int main()
     admin.GroundFloorParking.PrintParkingSlots();
 
     admin.GetEntryAttendant()->StartWorking();
-     admin.GetExitAttendant()->AllTicketsList = admin.GetEntryAttendant()->AllTicketsList;
+    admin.ParkingAttendants[3]->StartWorking();
 
-    admin.GetExitAttendant()->StartWorking();
+
     return 0;
 }

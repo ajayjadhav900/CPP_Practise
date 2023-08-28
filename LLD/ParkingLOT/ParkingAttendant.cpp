@@ -5,18 +5,18 @@
 using namespace std;
 // ParkingAttendant implementation
 
-ParkingAttendant::ParkingAttendant(GroundFloor &groundFloorParking) : GroundFloorParking(groundFloorParking)
+ParkingAttendant::ParkingAttendant(GroundFloor &groundFloorParking, std::vector<Ticket *> &allTicketList) : GroundFloorParking(groundFloorParking),
+                                                                                                            AllTicketList(allTicketList)
 {
 }
 
 ParkingAttendant::~ParkingAttendant()
 {
-    AllTicketsList.clear();
 }
 
-std::shared_ptr< ParkingSlot >ParkingAttendant::GetTheParkingSlot(std::string slotid)
+std::shared_ptr<ParkingSlot> ParkingAttendant::GetTheParkingSlot(std::string slotid)
 {
-    for (std::shared_ptr< ParkingSlot >slot : GroundFloorParking.AllParkingVec)
+    for (std::shared_ptr<ParkingSlot> slot : GroundFloorParking.AllParkingVec)
     {
         if (slot->slotID == slotid)
         {
@@ -28,14 +28,15 @@ std::shared_ptr< ParkingSlot >ParkingAttendant::GetTheParkingSlot(std::string sl
 
 // EntryManager implementation
 
-EntryManager::EntryManager(GroundFloor &groundFloorParking, ParkingDisplayDashboard &dashboard)
-    : ParkingAttendant(groundFloorParking), Dashboard(dashboard)
+EntryManager::EntryManager(GroundFloor &groundFloorParking, ParkingDisplayDashboard &dashboard,
+                           std::vector<Ticket *> &allTicketList)
+    : ParkingAttendant(groundFloorParking, allTicketList), Dashboard(dashboard), AllTicketsList1(allTicketList)
 {
 }
 
-std::shared_ptr< ParkingSlot >EntryManager::GetFreeParkingSlot(VehicleTypes type)
+std::shared_ptr<ParkingSlot> EntryManager::GetFreeParkingSlot(VehicleTypes type)
 {
-    for (std::shared_ptr< ParkingSlot >slot : GroundFloorParking.AllParkingVec)
+    for (std::shared_ptr<ParkingSlot> slot : GroundFloorParking.AllParkingVec)
     {
         if (!slot->isOccupied && slot->getVehicleType() == type)
         {
@@ -46,12 +47,12 @@ std::shared_ptr< ParkingSlot >EntryManager::GetFreeParkingSlot(VehicleTypes type
     return nullptr;
 }
 
-void EntryManager::CreateTicket(std::shared_ptr< ParkingSlot >parkSlot, const Vehicle &vehicle)
+void EntryManager::CreateTicket(std::shared_ptr<ParkingSlot> parkSlot, const Vehicle &vehicle)
 {
     if (parkSlot != nullptr)
     {
         Ticket *ticket = new Ticket(parkSlot->slotID, vehicle);
-        AllTicketsList.push_back(ticket);
+        AllTicketsList1.push_back(ticket);
         parkSlot->parkVehicle();
         std::cout << "Ticket created for slot " << parkSlot->slotID << std::endl;
         std::cout << "Ticket ID created : " << ticket->getTicketID() << std::endl;
@@ -89,7 +90,7 @@ void EntryManager::StartWorking()
             cin >> ch;
             if (ch == 1)
             {
-                std::shared_ptr< ParkingSlot >bikeSlot = GetFreeParkingSlot(VehicleTypes::TWO_WHEELER);
+                std::shared_ptr<ParkingSlot> bikeSlot = GetFreeParkingSlot(VehicleTypes::TWO_WHEELER);
                 // Create a ticket for the bike
                 Car bk("MH14 GF1243", VehicleTypes::TWO_WHEELER);
                 Vehicle &veh = bk;
@@ -97,7 +98,7 @@ void EntryManager::StartWorking()
             }
             else if (ch == 2)
             {
-                std::shared_ptr< ParkingSlot >bikeSlot = GetFreeParkingSlot(VehicleTypes::FOUR_WHEELER);
+                std::shared_ptr<ParkingSlot> bikeSlot = GetFreeParkingSlot(VehicleTypes::FOUR_WHEELER);
                 // Create a ticket for the bike
                 Car bk("MH14 GN8617", VehicleTypes::FOUR_WHEELER);
                 Vehicle &veh = bk;
@@ -128,7 +129,7 @@ void EntryManager::StartWorking()
 
 Ticket *EntryManager::GetTicketDetails(const std::string &id)
 {
-    for (Ticket *ticket : AllTicketsList)
+    for (Ticket *ticket : AllTicketsList1)
     {
         if (ticket->getTicketID() == id)
         {
@@ -145,9 +146,9 @@ void EntryManager::UpdateTicketDetails(Ticket *ticket)
     // You can modify the necessary attributes of the ticket object based on specific requirements.
 }
 
-std::shared_ptr< ParkingSlot >EntryManager::GetTheParkingSlot(std::string slotid)
+std::shared_ptr<ParkingSlot> EntryManager::GetTheParkingSlot(std::string slotid)
 {
-    for (std::shared_ptr< ParkingSlot >slot : GroundFloorParking.AllParkingVec)
+    for (std::shared_ptr<ParkingSlot> slot : GroundFloorParking.AllParkingVec)
     {
         if (slot->slotID == slotid)
         {
@@ -159,13 +160,14 @@ std::shared_ptr< ParkingSlot >EntryManager::GetTheParkingSlot(std::string slotid
 
 // ExitManager implementation
 
-ExitManager::ExitManager(GroundFloor &groundFloorParking) : ParkingAttendant(groundFloorParking)
+ExitManager::ExitManager(GroundFloor &groundFloorParking, std::vector<Ticket *> &allTicketList)
+    : ParkingAttendant(groundFloorParking, allTicketList), AllTicketsList1(allTicketList)
 {
 }
 
 Ticket *ExitManager::GetTicketDetails(const std::string &id)
 {
-    for (Ticket *ticket : AllTicketsList)
+    for (Ticket *ticket : AllTicketsList1)
     {
         if (ticket->getTicketID() == id)
         {
@@ -187,7 +189,7 @@ void ExitManager::AllocateParking()
     // Implement the logic for freeing up parking slots and updating ticket details when vehicles exit the parking
 }
 
-void ExitManager::CreateTicket(std::shared_ptr< ParkingSlot >parkSlot, const Vehicle &vehicle)
+void ExitManager::CreateTicket(std::shared_ptr<ParkingSlot> parkSlot, const Vehicle &vehicle)
 {
     if (parkSlot != nullptr)
     {
@@ -200,16 +202,16 @@ void ExitManager::CreateTicket(std::shared_ptr< ParkingSlot >parkSlot, const Veh
     }
 }
 
-std::shared_ptr< ParkingSlot >ExitManager::GetFreeParkingSlot(VehicleTypes type)
+std::shared_ptr<ParkingSlot> ExitManager::GetFreeParkingSlot(VehicleTypes type)
 {
     // The ExitManager does not need to find free parking slots
     // Return nullptr as there are no slots to allocate
     return nullptr;
 }
 
-std::shared_ptr< ParkingSlot >ExitManager::GetTheParkingSlot(std::string slotid)
+std::shared_ptr<ParkingSlot> ExitManager::GetTheParkingSlot(std::string slotid)
 {
-    for (std::shared_ptr< ParkingSlot >slot : GroundFloorParking.AllParkingVec)
+    for (std::shared_ptr<ParkingSlot> slot : GroundFloorParking.AllParkingVec)
     {
         if (slot->slotID == slotid)
         {
@@ -272,11 +274,12 @@ void ExitManager::StartWorking()
 
                 auto slot = GetTheParkingSlot(exitTicket->getSlotID());
                 if (slot != nullptr)
+                {
                     slot->releaseSlot();
+                    cout << "\nCurrent Park slots are " << --GroundFloorParking.currentParkSlots << endl;
+                }
                 else
                     cout << "\n\nIssue in releasing parking slot, Please connect with Administrator!!!\n\n";
-
-                cout << "\nCurrent Park slots are " << --GroundFloorParking.currentParkSlots << endl;
             }
         }
         else if (ch == 2)
@@ -286,7 +289,6 @@ void ExitManager::StartWorking()
         else
         {
             cout << "\n\nEnter the valid choice!!!\n\n";
-            cin >> ch;
         }
     }
 }

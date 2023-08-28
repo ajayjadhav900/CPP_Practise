@@ -8,8 +8,10 @@ public:
     GroundFloor GroundFloorParking;
     ParkingDisplayDashboard Dashboard;
     vector<shared_ptr<ParkingAttendant>> ParkingAttendants;
-
+    std::vector<Ticket *> AllTicketsList;
+   
     ParkingAdmin();
+    ~ParkingAdmin();
     void GenerateParking();
     void assignParkingLotToDashboard(GroundFloor &GroundFloorParking);
 
