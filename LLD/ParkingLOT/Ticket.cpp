@@ -6,8 +6,12 @@
 #include <sstream>
 #include <string>
 
-Ticket::Ticket(const std::string &slotID, Vehicle parkVehicle)
-    : slotID(slotID), entryTime(std::chrono::steady_clock::now())
+Ticket::Ticket(const std::string &slotID,
+               Vehicle parkVehicle,
+               int entryGateNo)
+    : slotID(slotID),
+      EntryGateNo(entryGateNo),
+      entryTime(std::chrono::steady_clock::now())
 {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
@@ -117,4 +121,22 @@ void Ticket::SetStatus(char choice)
 TicketStatus Ticket::GetStatus()
 {
     return Status;
+}
+
+void Ticket::printParkingTicketDetails(Ticket *exitTicket)
+{
+    std::chrono::steady_clock::duration duration = exitTicket->getExitTime() - exitTicket->getEntryTime();
+    long long parkingDuration = std::chrono::duration_cast<std::chrono::minutes>(duration).count();
+
+    std::cout << "\n\n------ Parking Ticket ------" << std::endl;
+    std::cout << "Ticket ID: " << exitTicket->getTicketID() << std::endl;
+    std::cout << "Ticket Status: " << static_cast<int>(exitTicket->GetStatus()) << std::endl;
+    std::cout << "Slot ID: " << exitTicket->getSlotID() << std::endl;
+    std::cout << "Vehicle Reg no: " << exitTicket->GetVehicleData().RegNo;
+    VehicleTypes type = exitTicket->GetVehicleData().Type;
+    std::cout << " Vehicle Type: " << static_cast<int>(type) << std::endl;
+    std::cout << "Parking duration: " << parkingDuration << " minutes" << std::endl;
+    std::cout << "Cost of ticket: " << exitTicket->EstimateCost() << " rupees" << std::endl;
+    std::cout << "Entry Gate No: " << exitTicket->EntryGateNo << std::endl;
+    std::cout << "Exit Gate No: " << exitTicket->ExitGateNo << std::endl;
 }

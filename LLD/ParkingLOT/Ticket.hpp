@@ -15,7 +15,7 @@ enum class TicketStatus
 class Ticket
 {
 public:
-    Ticket(const std::string &slotID, Vehicle parkVehicle);
+    Ticket(const std::string &slotID, Vehicle parkVehicle, int entryGateNo);
     ~Ticket();
     std::string getTicketID() const;
     std::string getSlotID() const;
@@ -28,6 +28,7 @@ public:
     void DoThePayment(PaymentMode mode, int amt);
     void SetStatus(char ch);
     TicketStatus GetStatus();
+    void printParkingTicketDetails( Ticket *exitTicket);
 
 private:
     std::string ticketID;
@@ -39,6 +40,8 @@ private:
     int cost;
     TicketStatus Status;
     std::unique_ptr<IPayment> Pay;
+    int EntryGateNo;
+    int ExitGateNo;
 };
 
 #endif

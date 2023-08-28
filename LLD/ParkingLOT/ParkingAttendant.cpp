@@ -5,8 +5,9 @@
 using namespace std;
 // ParkingAttendant implementation
 
-ParkingAttendant::ParkingAttendant(GroundFloor &groundFloorParking, std::vector<Ticket *> &allTicketList) : GroundFloorParking(groundFloorParking),
-                                                                                                            AllTicketList(allTicketList)
+ParkingAttendant::ParkingAttendant(GroundFloor &groundFloorParking,
+                                   std::vector<Ticket *> &allTicketList) : GroundFloorParking(groundFloorParking),
+                                                                           AllTicketList(allTicketList)
 {
 }
 
@@ -28,9 +29,14 @@ std::shared_ptr<ParkingSlot> ParkingAttendant::GetTheParkingSlot(std::string slo
 
 // EntryManager implementation
 
-EntryManager::EntryManager(GroundFloor &groundFloorParking, ParkingDisplayDashboard &dashboard,
-                           std::vector<Ticket *> &allTicketList)
-    : ParkingAttendant(groundFloorParking, allTicketList), Dashboard(dashboard), AllTicketsList1(allTicketList)
+EntryManager::EntryManager(GroundFloor &groundFloorParking,
+                           ParkingDisplayDashboard &dashboard,
+                           std::vector<Ticket *> &allTicketList,
+                           int gateNo)
+    : ParkingAttendant(groundFloorParking, allTicketList),
+      Dashboard(dashboard),
+      AllTicketsList1(allTicketList),
+      GateNo(gateNo)
 {
 }
 
@@ -47,11 +53,15 @@ std::shared_ptr<ParkingSlot> EntryManager::GetFreeParkingSlot(VehicleTypes type)
     return nullptr;
 }
 
-void EntryManager::CreateTicket(std::shared_ptr<ParkingSlot> parkSlot, const Vehicle &vehicle)
+void EntryManager::CreateTicket(std::shared_ptr<ParkingSlot> parkSlot,
+                                const Vehicle &vehicle,
+                                int entryGateNo)
 {
     if (parkSlot != nullptr)
     {
-        Ticket *ticket = new Ticket(parkSlot->slotID, vehicle);
+        Ticket *ticket = new Ticket(parkSlot->slotID,
+                                    vehicle,
+                                    entryGateNo);
         AllTicketsList1.push_back(ticket);
         parkSlot->parkVehicle();
         std::cout << "Ticket created for slot " << parkSlot->slotID << std::endl;
@@ -68,7 +78,7 @@ void EntryManager::AllocateParking()
     std::cout << "\nParking allocated!!!\n";
 }
 
-void EntryManager::StartWorking()
+void EntryManager::StartWorking(int entryGateNo)
 {
     while (1)
     {
@@ -94,7 +104,9 @@ void EntryManager::StartWorking()
                 // Create a ticket for the bike
                 Car bk("MH14 GF1243", VehicleTypes::TWO_WHEELER);
                 Vehicle &veh = bk;
-                CreateTicket(bikeSlot, veh);
+                CreateTicket(bikeSlot,
+                             veh,
+                             entryGateNo);
             }
             else if (ch == 2)
             {
@@ -102,7 +114,9 @@ void EntryManager::StartWorking()
                 // Create a ticket for the bike
                 Car bk("MH14 GN8617", VehicleTypes::FOUR_WHEELER);
                 Vehicle &veh = bk;
-                CreateTicket(bikeSlot, veh);
+                CreateTicket(bikeSlot,
+                             veh,
+                             entryGateNo);
             }
 
             AllocateParking();
@@ -160,8 +174,12 @@ std::shared_ptr<ParkingSlot> EntryManager::GetTheParkingSlot(std::string slotid)
 
 // ExitManager implementation
 
-ExitManager::ExitManager(GroundFloor &groundFloorParking, std::vector<Ticket *> &allTicketList)
-    : ParkingAttendant(groundFloorParking, allTicketList), AllTicketsList1(allTicketList)
+ExitManager::ExitManager(GroundFloor &groundFloorParking,
+                         std::vector<Ticket *> &allTicketList,
+                         int gateNo)
+    : ParkingAttendant(groundFloorParking, allTicketList),
+      AllTicketsList1(allTicketList),
+      GateNo(gateNo)
 {
 }
 
@@ -189,12 +207,13 @@ void ExitManager::AllocateParking()
     // Implement the logic for freeing up parking slots and updating ticket details when vehicles exit the parking
 }
 
-void ExitManager::CreateTicket(std::shared_ptr<ParkingSlot> parkSlot, const Vehicle &vehicle)
+void ExitManager::CreateTicket(std::shared_ptr<ParkingSlot> parkSlot, const Vehicle &vehicle, int exitGateNo)
 {
     if (parkSlot != nullptr)
     {
         parkSlot->releaseSlot();
         std::cout << "Ticket closed for slot " << parkSlot->slotID << std::endl;
+        GateNo = exitGateNo;
     }
     else
     {
@@ -221,7 +240,7 @@ std::shared_ptr<ParkingSlot> ExitManager::GetTheParkingSlot(std::string slotid)
     return nullptr;
 }
 
-void ExitManager::StartWorking()
+void ExitManager::StartWorking(int exitGateNo)
 {
     while (1)
     {
@@ -235,6 +254,7 @@ void ExitManager::StartWorking()
             cout << "Enter the ticket ID for payment: ";
             cin >> tktID;
             Ticket *exitTicket = GetTicketDetails(tktID);
+
             if (exitTicket == nullptr)
             {
                 cout << "Please enter Valid ticket!!!";
@@ -247,27 +267,11 @@ void ExitManager::StartWorking()
                 // For example, set the exit time and update the ticket details
                 exitTicket->setExitTime();
                 UpdateTicketDetails(exitTicket);
-            }
 
-            if (exitTicket != nullptr)
-            {
-                // Perform operations with the ticket at the exit
-                // For example, calculate the parking duration and print the details
-                std::chrono::steady_clock::duration duration = exitTicket->getExitTime() - exitTicket->getEntryTime();
-                long long parkingDuration = std::chrono::duration_cast<std::chrono::minutes>(duration).count();
-
-                std::cout << "\n\n------ Parking Ticket ------" << std::endl;
-                std::cout << "Ticket ID: " << exitTicket->getTicketID() << std::endl;
-                std::cout << "Ticket Status: " << static_cast<int>(exitTicket->GetStatus()) << std::endl;
-                std::cout << "Slot ID: " << exitTicket->getSlotID() << std::endl;
-                std::cout << "Vehile Reg no: " << exitTicket->GetVehicleData().RegNo.c_str();
-                VehicleTypes type = exitTicket->GetVehicleData().Type;
-                std::cout << " Vehicle Type: " << static_cast<int>(type) << std::endl;
-                std::cout << "Parking duration: " << parkingDuration << " minutes" << std::endl;
-                std::cout << "Cost of ticket: " << exitTicket->EstimateCost() << " rupees" << std::endl;
                 std::cout << "Payment: " << std::endl;
                 exitTicket->DoThePayment(PaymentMode::ONLINEAPP, exitTicket->EstimateCost());
 
+                exitTicket->printParkingTicketDetails(exitTicket);
                 // Ticket footer
                 printSeparator();
                 std::cout << "Thank you for using our parking services!" << std::endl;
