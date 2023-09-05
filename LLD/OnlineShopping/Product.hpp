@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 
+#ifndef Product_HPP
+#define Product_HPP
 class Product
 {
     std::string ProductName;
@@ -20,3 +22,5 @@ public:
     double GetDiscount();
     void PrintProduct();
 };
+
+#endif
