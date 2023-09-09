@@ -1,41 +1,74 @@
 #include <iostream>
 #include <cassert>
 #include <cstddef>
-
-class IntArray
+#include <cstring>
+using namespace std;
+class Employee
 {
-private:
-	int* m_array{};
-	int m_length{};
+	char *Name{"nullptr"};
+	int Id{0};
 
 public:
-	IntArray(int length) // constructor
+	Employee()
 	{
-		assert(length > 0);
+		Name = "nullptr";
+		Id = 0;
+	}
+	Employee(char *name, int id) : Name(name), Id(id)
+	{
+	}
+	Employee(const Employee &emp)
+	{
+		char *temp = new char[strlen(emp.Name) + 1];
 
-		m_array = new int[static_cast<std::size_t>(length)]{};
-		m_length = length;
+		strcpy(temp, emp.Name);
+		Name = temp;
+		Id = emp.Id;
 	}
 
-	~IntArray() // destructor
+	Employee &operator=(const Employee &emp)
 	{
-		// Dynamically delete the array we allocated earlier
-		delete[] m_array;
+		char *temp = new char[strlen(emp.Name) + 1];
+
+		strcpy(temp, emp.Name);
+		Name = temp;
+		Id = emp.Id;
+
+		return *this;
 	}
 
-	void setValue(int index, int value) { m_array[index] = value; }
-	int getValue(int index) { return m_array[index]; }
+	bool operator==(const Employee &emp)
+	{
+		if (this == &emp)
+			return true;
+		else
+		{
+			if (!strcmp(this->Name, emp.Name) && Id == emp.Id)
+				return true;
+		}
+		return false;
+	}
+	~Employee()
+	{
+		delete[] Name;
+	}
 
-	int getLength() { return m_length; }
+	void display()
+	{
+		if (Name != nullptr)
+			cout << "Name: " << Name << "Id: " << Id << endl;
+	}
 };
 
 int main()
 {
-	IntArray ar ( 10 ); // allocate 10 integers
-	for (int count{ 0 }; count < ar.getLength(); ++count)
-		ar.setValue(count, count+1);
+	Employee e1[3] = {{"Ajay", 10}, {"Vijay", 20}, {"Navin", 100}};
 
-	std::cout << "The value of element 5 is: " << ar.getValue(5) << '\n';
+	Employee e2(e1[1]);
+	e2.display();
+	Employee e3;
+	e3.display();
 
-	return 0;
-} // ar is destroyed here, so the ~IntArray() destructor function is called here
+	if(e3 == e2)
+		cout<<"Are same ";
+}

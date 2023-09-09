@@ -16,7 +16,7 @@ public:
 };
 
 // Derived class 1
-class Car : protected Vehicle
+class Car : public Vehicle
 {
 protected:
     string brand;
@@ -30,7 +30,7 @@ public:
 };
 
 // Derived class 2
-class Sedan : protected Car
+class Sedan : public Car
 {
 private:
     string model;

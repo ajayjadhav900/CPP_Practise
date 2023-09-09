@@ -1,57 +1,59 @@
 #include <iostream>
 #include <memory>
-
+#include <cstring>
 class Base
 {
-public:
-    Base()
-    {
-        std::cout << "Base class constr" << std::endl;
-    }
-    Base(const Base &other)
-    {
-        std::cout << "Base class copy constr" << std::endl;
-    }
-    Base &operator=(Base &other)
-    {
-        std::cout << "Base class assign= constr" << std::endl;
+    char *Name;
+    int no = 0;
 
-        if (this == &other)
+public:
+    Base(char *name = nullptr) : Name(new char[strlen(name) + 1])
+    {
+        strcpy(Name, name);
+    }
+    Base(const Base &copy)
+    {
+        char *temp = nullptr;
+        temp = new char[strlen(copy.Name) + 1];
+        strcpy(Name, copy.Name);
+    }
+    Base &operator=(const Base &other)
+    {
+        if (this != &other)
         {
-            return *this;
+            delete[] Name;
+            Name = new char[strlen(other.Name) + 1];
+            strcpy(Name, other.Name);
         }
 
-        return other;
+        return *this;
     }
-    virtual void display() const
+    Base & operator++()
     {
-        std::cout << "Base class" << std::endl;
+        delete Name;
+        strcpy(Name, new char[strlen(Name) + 1]);
+        strcpy(Name, Name);
+        no++;
+        return *this;
     }
-};
 
-class Derived : public Base
-{
-public:
-    Base B;
-    void display() const override
+    void display()
     {
-        std::cout << "Derived class" << std::endl;
-    }
-    Derived()
-    {
-        std::cout << "Derived class constr" << std::endl;
-    }
-    Derived(Base &other)
-    {
-        std::cout << "Derived class copy constr" << std::endl;
 
-        Derived::B = other;
+        std::cout << "Name :" << Name << std::endl<<" No: "<<no;
+    }
+    ~Base()
+    {
+        delete[] Name;
     }
 };
 
 int main()
 {
-    Base b;
-    Derived d1(b);
+    Base b1("Ajay");
+    Base b2(b1);
+    b1++;
+    b1.display();
+
     return 0;
 }

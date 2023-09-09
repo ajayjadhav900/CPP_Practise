@@ -1,35 +1,28 @@
 #include <iostream>
+using namespace std;
 
 class A {
 public:
-    virtual void foo() {
-        std::cout << "A::foo()" << std::endl;
-    }
+    void foo() { cout << "A::foo()" << endl; }
 };
 
-class B : virtual public A {  // Virtual inheritance
+class B :  public A { // Use virtual inheritance
 public:
-    void foo() {
-        std::cout << "B::foo()" << std::endl;
-    }
+    void foo() { cout << "B::foo()" << endl; }
 };
 
-class C : virtual public A {  // Virtual inheritance
+class C :   public A { // Use virtual inheritance
 public:
-    void foo() {
-        std::cout << "C::foo()" << std::endl;
-    }
+    void foo() { cout << "C::foo()" << endl; }
 };
 
 class D : public B, public C {
 public:
-    void foo()  {
-        A::foo(); // Call B's foo()
-    }
+    void foo() { }
 };
 
 int main() {
     D d;
-    d.foo();  // Calls B::foo() or C::foo() (no ambiguity)
+    d.foo(); // Now, B::foo() will be called without ambiguity
     return 0;
 }
