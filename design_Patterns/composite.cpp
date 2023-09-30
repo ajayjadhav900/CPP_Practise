@@ -1,69 +1,82 @@
+#include <iostream>
 #include <vector>
 #include <string>
-#include <iostream>
-#include"composite.hpp"
 using namespace std;
 
-
-
-class OrderBox : public IItem
-{
+class IFileSystem {
 public:
-    int Price;
-    string Name;
-    vector<IItem *> Items;
+    virtual void FileSystemDetails() = 0;
+    virtual void Insert(IFileSystem*) = 0;
+    virtual void Display() = 0;
 
-    OrderBox(string name, int price, vector<IItem *> items)
-    {
-        Name = name;
-        Price = price;
-        Items = items;
-    }
-
-    string nameofItem() override
-    {
-        return Name;
-    }
-
-    int PriceOftheItem() override
-    {
-        return Price;
-    }
-
-    void printDetails() override
-    {
-        for (auto itr : Items)
-        {
-            cout << "Item Name: " << itr->nameofItem() << " Price: " << itr->PriceOftheItem() << endl;
-        }
+    virtual ~IFileSystem() {
+        cout << " ~IFileSystem()\n";
     }
 };
 
-int main()
-{
-    IItem *it1 = new Item("HeadPhone", 2000);
-    IItem *it2 = new Item("ScreenGuard", 1000);
-    IItem *it3 = new Item("Nanpro", 700);
-    IItem *it4 = new Item("Phone", 78000);
+class File : public IFileSystem {
+public:
+    File(const string& name) : Name(name) {}
+    void FileSystemDetails() override {
+        cout << "\tFile: " << Name << endl;
+    }
+    void Insert(IFileSystem*) override {
+        // Do nothing as File cannot contain other elements
+    }
+    void Display() override {
+        FileSystemDetails();
+    }
+    ~File() {
+        cout << " ~File()\n";
+    }
 
-    vector<IItem *> items;
-    items.push_back(it1);
-    items.push_back(it2);
-    items.push_back(it3);
-    items.push_back(it4);
+private:
+    string Name;
+};
 
-    IItem *order = new OrderBox("Standard Order", 100, items);
+class Directory : public IFileSystem {
+public:
+    Directory(const string& name) : Name(name) {}
+    void FileSystemDetails() override {
+        cout << "Directory: " << Name << endl;
+    }
+    void Display() override {
+        FileSystemDetails(); // Call FileSystemDetails of the Directory itself
+        for (auto itr : Directories) {
+            itr->Display(); // Call Display of child components
+        }
+    }
+    void Insert(IFileSystem* ptr) {
+        Directories.push_back(ptr);
+    }
+    ~Directory() {
+        for (auto itr : Directories) {
+            delete itr;
+        }
+        cout << " ~Directory()\n";
+    }
 
+private:
+    string Name;
+    vector<IFileSystem*> Directories;
+};
 
-        order->printDetails();
+int main() {
+    IFileSystem* root = new Directory("root");
+    IFileSystem* opt = new Directory("opt");
+    IFileSystem* config = new File("config.xml");
+    opt->Insert(config);
+    IFileSystem* emc = new Directory("emc");
+    opt->Insert(emc);
+    IFileSystem* save = new File("nsrvproxy_save");
+    emc->Insert(save);
+    root->Insert(opt);
 
+    // Display the entire file system structure
+    root->Display();
 
-    // Clean up dynamically allocated memory
-    delete it1;
-    delete it2;
-    delete it3;
-    delete it4;
-    delete order;
+    // Properly delete the root
+    delete root;
 
     return 0;
 }

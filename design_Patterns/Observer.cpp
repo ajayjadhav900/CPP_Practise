@@ -47,22 +47,4 @@ int main()
 }
 
 
-class InterestCalculator {
-public:
-    virtual double calculateInterest(double balance) const = 0;
-};
-
-class FixedDepositInterestCalculator : public InterestCalculator {
-public:
-    double calculateInterest(double balance) const override {
-        // logic to calculate interest for fixed deposit account
-    }
-};
-
-class SavingsAccountInterestCalculator : public InterestCalculator {
-public:
-    double calculateInterest(double balance) const override {
-        // logic to calculate interest for savings account
-    }
-};
 
