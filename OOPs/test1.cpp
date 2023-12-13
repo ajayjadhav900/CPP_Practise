@@ -1,73 +1,54 @@
-template <typename T>
-
-class MySmartPointer
+#include <iostream>
+#include <vector>
+class Fraction
 {
-    T *ptr;
-    size_t *count{0};
-
 public:
-    MySmartPointer(T *p = nullptr) : ptr(p)
-    {
-        count = new int(1);
-    }
-    MySmartPointer(const MySmartPointer &other)
-    {
-        ptr = other.ptr;
-        count = other.count;
-        (*count)++;
-    }
+    int numerator{0};
+    int denominator{1};
 
-    MySmartPointer &operator=(MySmartPointer &other)
-    {
-        if (this != &other)
-        {
-            if (count >= 2)
-            {
-                ptr = other.ptr;
-                count = other.count;
-                (*count)++;
-            }
-            else if (count > 0 || count == 1)
-            {
-                delete ptr;
-                ptr = other.ptr;
-                count = other.count;
-                (*count)++;
-            }
-        }
-        return *this;
-    }
-
-    ~MySmartPointer()
-    {
-        if ((*count) > 0)
-        {
-            (*count)--;
-            if (ptr && count == 0)
-            {
-                delete ptr;
-            }
-        }
-    }
+    Fraction getFraction();
+    Fraction multiply(const Fraction &f1, const Fraction &f2);
+    void printFraction(const Fraction &f);
 };
 
-class Resource
+Fraction Fraction::getFraction()
 {
+    Fraction temp{};
+    std::cout << "Enter a value for numerator: ";
+    std::cin >> temp.numerator;
+    std::cout << "Enter a value for denominator: ";
+    std::cin >> temp.denominator;
+    std::cout << '\n';
 
-public:
-    Resource()
-    {
-        // constrctor
-    }
-    ~Resource()
-    {
-        // destr
-    }
-};
+    return temp;
+}
+
+Fraction multiply(const Fraction &f1, const Fraction &f2)
+{
+    Fraction temp;
+    return {f1.numerator * f2.numerator, f1.denominator * f2.denominator};
+}
+
+void Fraction::printFraction(const Fraction &f)
+{
+    std::cout << f.numerator << '/' << f.denominator << '\n';
+}
 
 int main()
 {
-    MySmartPointer<Resource> res(new Resource());
+
+    std::vector squ = {1, 4, 9, 16, 25};
+    std::vector<int> vec(5);
+    for(auto itr:vec)
+    {
+        std::cout<<itr;
+    }
+    Fraction f1 = f1.getFraction();
+    Fraction f2 = f2.getFraction();
+
+    std::cout << "Your fractions multiplied together: ";
+
+    f1.printFraction(multiply(f1, f2));
 
     return 0;
 }
