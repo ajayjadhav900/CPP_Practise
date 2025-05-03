@@ -21,7 +21,7 @@ int main()
 
     if (!Dashboard.GenerateParkingFullMessege())
     {
-        return;
+        return 0;
     }
     ParkingSlot *bikeSlot = entryManager.GetFreeParkingSlot(VehicleTypes::TWO_WHEELER);
 

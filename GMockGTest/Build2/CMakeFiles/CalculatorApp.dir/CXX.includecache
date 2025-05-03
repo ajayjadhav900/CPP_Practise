@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/Calculator.hpp
+
+/home/ajayj/practieseC++/CPP_Practise/GMockGTest/src/CalculatorAPP.cpp
+Calculator.hpp
+/home/ajayj/practieseC++/CPP_Practise/GMockGTest/src/Calculator.hpp
+iostream
+-
+stdexcept
+-
+
+/home/ajayj/practieseC++/CPP_Practise/GMockGTest/src/main.cpp
+Calculator.hpp
+/home/ajayj/practieseC++/CPP_Practise/GMockGTest/src/Calculator.hpp
+iostream
+-
+limits
+-
+stdexcept
+-
+
