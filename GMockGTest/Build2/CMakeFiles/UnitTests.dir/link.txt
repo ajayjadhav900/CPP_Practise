@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/UnitTests.dir/unittest/CalculatorTest.cpp.o CMakeFiles/UnitTests.dir/src/CalculatorAPP.cpp.o  -o UnitTests  /usr/lib/x86_64-linux-gnu/libgtest_main.a /usr/lib/x86_64-linux-gnu/libgtest.a -lpthread 
