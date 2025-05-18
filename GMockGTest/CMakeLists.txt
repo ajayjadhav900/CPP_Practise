@@ -10,7 +10,8 @@ enable_testing()
 add_executable(UnitTests unittest/CalculatorTest.cpp src/CalculatorAPP.cpp) # Link test and Calculator implementation
 
 find_package(GTest REQUIRED)
-target_link_libraries(UnitTests GTest::gtest_main)
+find_package(GMock REQUIRED)
+target_link_libraries(UnitTests GTest::gtest_main GMock::gmock)
 target_include_directories(UnitTests PRIVATE include unittest)
 
 # Add tests to the test runner

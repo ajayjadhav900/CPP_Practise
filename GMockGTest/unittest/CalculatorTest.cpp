@@ -1,10 +1,21 @@
 #include "gtest/gtest.h"
 #include "Calculator.hpp"
+#include "gmock/gmock.h"
+
+// Mock class for Calculator
+class MockCalculator {
+public:
+    MOCK_METHOD(int, add, (int a, int b), ());
+    MOCK_METHOD(int, subtract, (int a, int b), ());
+    MOCK_METHOD(int, multiply, (int a, int b), ());
+    MOCK_METHOD(int, divide, (int a, int b), ());
+};
+
 // Test fixture for the Calculator class
 class CalculatorTest : public ::testing::Test {
 protected:
     Calculator calculator_;
-};
+}; 
 
 // Test case for the add function
 TEST_F(CalculatorTest, AddPositiveNumbers) {
@@ -54,6 +65,20 @@ TEST_F(CalculatorTest, DivideNegativeNumbers) {
 TEST_F(CalculatorTest, DivideByZeroThrowsException) {
     ASSERT_THROW(calculator_.divide(5, 0), std::invalid_argument);
 }
+
+// Example test case using the mock class
+TEST(MockCalculatorTest, AddFunction) {
+    MockCalculator mockCalculator;
+
+    //Set expectation for the add method
+    EXPECT_CALL(mockCalculator, add(2, 3))
+        .Times(1)
+        .WillOnce(::testing::Return(5));
+
+    // Call the mock method
+   EXPECT_EQ(mockCalculator.add(2, 3), 5);
+}
+
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
